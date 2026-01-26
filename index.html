@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RFEX — African-friendly Crypto Exchange</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <meta name="description" content="RFEX — a Binance/Bybit-inspired crypto exchange with African payments, KYC, spot & futures trading, and gift card marketplace.">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#">RFEX</a>
+      <nav class="nav" id="nav">
+        <a href="#features">Features</a>
+        <a href="#trading">Trading</a>
+        <a href="#payments">Payments</a>
+        <a href="#giftcards">Gift Cards</a>
+        <a href="#referral">Referral</a>
+        <a href="#tech">Tech</a>
+        <a class="cta" href="#">Get Started</a>
+      </nav>
+      <button id="navToggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <h1>RFEX — Built for Africa, Powered for the World</h1>
+          <p class="lead">A secure, fast, and local-payment friendly crypto exchange inspired by top platforms — spot & futures, KYC, mobile money, and gift card marketplace.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="#">Create Account</a>
+            <a class="btn btn-ghost" href="#features">Explore Features</a>
+          </div>
+          <div class="badges">
+            <span>GHS • USD • EUR • NGN</span>
+            <span>MTN • Vodafone • AirtelTigo</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="ticker">
+            <div class="pair">BTC/USDT <strong>35,420</strong></div>
+            <div class="pair">ETH/USDT <strong>2,600</strong></div>
+            <div class="pair">USDT/NGN <strong>1,200</strong></div>
+          </div>
+          <div class="mini-trade">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <h3 style="margin:0;font-size:1.1rem;color:var(--accent)">⚡ Quick Converter</h3>
+              <div id="liveRateIndicator" style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--muted)">
+                <span style="width:6px;height:6px;background:#10b981;border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
+                <span>Live Rates</span>
+              </div>
+            </div>
+            
+            <!-- From Currency -->
+            <div class="converter-group">
+              <label style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;display:block">From</label>
+              <div class="converter-input-wrapper">
+                <input type="number" id="convertFromAmount" placeholder="0.00" step="0.01" min="0" onkeyup="updateConversion('from')">
+                <select id="convertFromCurrency" onchange="updateConversion('from')">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="NGN">NGN</option>
+                  <option value="GHS">GHS</option>
+                  <option value="BTC">BTC</option>
+                  <option value="ETH">ETH</option>
+                  <option value="USDT">USDT</option>
+                  <option value="BNB">BNB</option>
+                  <option value="SOL">SOL</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div style="text-align:center;margin:12px 0">
+              <button class="swap-btn" onclick="swapCurrencies()" title="Swap currencies">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="17 1 21 5 17 9"></polyline>
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                  <polyline points="7 23 3 19 7 15"></polyline>
+                  <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- To Currency -->
+            <div class="converter-group">
+              <label style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;display:block">To</label>
+              <div class="converter-input-wrapper">
+                <input type="number" id="convertToAmount" placeholder="0.00" step="0.01" min="0" readonly>
+                <select id="convertToCurrency" onchange="updateConversion('from')">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="NGN">NGN</option>
+                  <option value="GHS">GHS</option>
+                  <option value="BTC">BTC</option>
+                  <option value="ETH">ETH</option>
+                  <option value="USDT" selected>USDT</option>
+                  <option value="BNB">BNB</option>
+                  <option value="SOL">SOL</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Exchange Rate Display -->
+            <div class="exchange-rate-display">
+              <div>
+                <span style="color:var(--muted);font-size:0.85rem">Exchange Rate</span>
+                <span id="exchangeRateText" style="font-weight:600;color:var(--accent);display:block;margin-top:4px">1 USD = 1 USDT</span>
+              </div>
+              <div style="text-align:right">
+                <span style="color:var(--muted);font-size:0.75rem;display:block" id="lastUpdateTime">Updating...</span>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="executeConvert()">
+              Convert Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section container">
+      <h2>Core Features</h2>
+      <p class="section-lead">Everything a modern exchange needs — local payments and African-first integrations.</p>
+      <div class="grid">
+        <article class="card feature-card" data-feature="account">
+          <h3>User Accounts</h3>
+          <p>Register, 2FA, profiles, fiat selector, and user security by design.</p>
+          <button class="btn-feature">Get Started →</button>
+        </article>
+        <article class="card feature-card" data-feature="kyc">
+          <h3>KYC & Verification</h3>
+          <p>Upload ID (Passport, Ghana Card), selfie checks, and admin approval flow.</p>
+          <button class="btn-feature">Verify Now →</button>
+        </article>
+        <article class="card feature-card" data-feature="wallet">
+          <h3>Wallets & Transactions</h3>
+          <p>Multi-asset wallets, fiat wallets, transaction history and cold storage support.</p>
+          <button class="btn-feature">View Wallet →</button>
+        </article>
+        <article class="card feature-card" data-feature="giftcard">
+          <h3>Gift Card Marketplace</h3>
+          <p>Buy & sell gift cards, upload codes/images, and trade for fiat or crypto.</p>
+          <button class="btn-feature">Browse Cards →</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="trading" class="section alt">
+      <div class="container">
+        <h2>Live Trading Market</h2>
+        <p class="section-lead">Trade crypto with real-time prices, charts, and instant execution</p>
+        
+        <!-- Market Stats -->
+        <div class="market-stats">
+          <div class="stat-card">
+            <span class="stat-label">24h Volume</span>
+            <span class="stat-value">$<span id="totalVolume">0</span></span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Active Pairs</span>
+            <span class="stat-value"><span id="activePairs">8</span></span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">24h Trades</span>
+            <span class="stat-value"><span id="totalTrades">0</span></span>
+          </div>
+        </div>
+
+        <!-- Trading Interface -->
+        <div class="trading-interface">
+          <!-- Left: Market List -->
+          <div class="market-list">
+            <h3>Markets</h3>
+            <div class="market-filter">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="usdt">USDT</button>
+              <button class="filter-btn" data-filter="btc">BTC</button>
+            </div>
+            <div id="marketPairs" class="pairs-list">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Center: Chart & Order Book -->
+          <div class="market-center">
+            <div class="trading-header">
+              <div class="pair-info">
+                <h3 id="currentPair">BTC/USDT</h3>
+                <span id="currentPrice" class="current-price">$0.00</span>
+                <span id="priceChange" class="price-change">+0.00%</span>
+              </div>
+            </div>
+            
+            <!-- Price Chart -->
+            <div class="price-chart">
+              <canvas id="tradingChart"></canvas>
+            </div>
+
+            <!-- Order Book -->
+            <div class="order-book">
+              <div class="orderbook-header">
+                <h4>Order Book</h4>
+                <div class="orderbook-tabs">
+                  <button class="tab-btn active">Bids</button>
+                  <button class="tab-btn">Asks</button>
+                </div>
+              </div>
+              <div class="orderbook-content" id="orderBookContent">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Trading Form -->
+          <div class="trading-form-panel">
+            <div class="trade-tabs">
+              <button class="trade-tab active" data-tab="buy">Buy</button>
+              <button class="trade-tab" data-tab="sell">Sell</button>
+            </div>
+
+            <div id="buyForm" class="trade-form active">
+              <div class="form-group">
+                <label>Order Type</label>
+                <select id="buyOrderType">
+                  <option value="market">Market</option>
+                  <option value="limit">Limit</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="buyLimitPrice" style="display:none">
+                <label>Price (USDT)</label>
+                <input type="number" id="buyPrice" placeholder="0.00" step="0.01">
+              </div>
+
+              <div class="form-group">
+                <label>Amount (<span id="buyCrypto">BTC</span>)</label>
+                <input type="number" id="buyAmount" placeholder="0.00" step="0.00001">
+                <div class="amount-buttons">
+                  <button class="percent-btn" data-percent="25">25%</button>
+                  <button class="percent-btn" data-percent="50">50%</button>
+                  <button class="percent-btn" data-percent="75">75%</button>
+                  <button class="percent-btn" data-percent="100">100%</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Total (USDT)</label>
+                <input type="number" id="buyTotal" placeholder="0.00" readonly>
+              </div>
+
+              <div class="balance-info">
+                Available: <span id="usdtBalance">1,000.00</span> USDT
+              </div>
+
+              <button class="btn-trade buy-btn" onclick="executeTrade('buy')">Buy <span id="buyPairName">BTC</span></button>
+            </div>
+
+            <div id="sellForm" class="trade-form">
+              <div class="form-group">
+                <label>Order Type</label>
+                <select id="sellOrderType">
+                  <option value="market">Market</option>
+                  <option value="limit">Limit</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="sellLimitPrice" style="display:none">
+                <label>Price (USDT)</label>
+                <input type="number" id="sellPrice" placeholder="0.00" step="0.01">
+              </div>
+
+              <div class="form-group">
+                <label>Amount (<span id="sellCrypto">BTC</span>)</label>
+                <input type="number" id="sellAmount" placeholder="0.00" step="0.00001">
+                <div class="amount-buttons">
+                  <button class="percent-btn" data-percent="25">25%</button>
+                  <button class="percent-btn" data-percent="50">50%</button>
+                  <button class="percent-btn" data-percent="75">75%</button>
+                  <button class="percent-btn" data-percent="100">100%</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Total (USDT)</label>
+                <input type="number" id="sellTotal" placeholder="0.00" readonly>
+              </div>
+
+              <div class="balance-info">
+                Available: <span id="cryptoBalance">0.05</span> <span id="cryptoSymbol">BTC</span>
+              </div>
+
+              <button class="btn-trade sell-btn" onclick="executeTrade('sell')">Sell <span id="sellPairName">BTC</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Trades -->
+        <div class="recent-trades-section">
+          <h3>Recent Trades</h3>
+          <div id="recentTrades" class="trades-table">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="payments" class="section container">
+      <h2>Payments</h2>
+      <p class="section-lead">Deposit via crypto, local banks, or mobile money providers.</p>
+      <div class="grid">
+        <div class="card payment-card" data-payment="bank">
+          <h3>Bank Transfers</h3>
+          <p>Seamless fiat on-ramps with major African banks.</p>
+          <button class="btn-feature">Deposit via Bank →</button>
+        </div>
+        <div class="card payment-card" data-payment="mobile">
+          <h3>Mobile Money</h3>
+          <p>MTN, Vodafone, AirtelTigo integrations for instant deposits.</p>
+          <button class="btn-feature">Use Mobile Money →</button>
+        </div>
+        <div class="card payment-card" data-payment="crypto">
+          <h3>Crypto Deposits</h3>
+          <p>Deposit BTC, ETH, USDT and trade instantly.</p>
+          <button class="btn-feature">Deposit Crypto →</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="wallets" class="section alt">
+      <div class="container">
+        <h2>💼 Your Wallets</h2>
+        <p class="section-lead">Manage your crypto and fiat balances with multi-currency support</p>
+        
+        <!-- Wallet Overview -->
+        <div class="wallet-overview">
+          <div class="total-balance-card">
+            <div class="balance-header">
+              <span>Total Portfolio Value</span>
+              <button class="refresh-btn" onclick="refreshWalletBalances()" title="Refresh balances">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="total-balance" id="totalPortfolioValue">$0.00</div>
+            <div class="balance-change">
+              <span id="portfolioChange" class="change-positive">+$0.00 (0%)</span>
+              <span style="color:var(--muted);font-size:0.85rem">24h</span>
+            </div>
+          </div>
+          
+          <div class="wallet-actions-grid">
+            <button class="wallet-action-btn" onclick="openWalletModal('deposit')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <polyline points="19 12 12 19 5 12"></polyline>
+              </svg>
+              <span>Deposit</span>
+            </button>
+            <button class="wallet-action-btn" onclick="openWalletModal('withdraw')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+              </svg>
+              <span>Withdraw</span>
+            </button>
+            <button class="wallet-action-btn" onclick="openWalletModal('transfer')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="17 1 21 5 17 9"></polyline>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                <polyline points="7 23 3 19 7 15"></polyline>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+              </svg>
+              <span>Transfer</span>
+            </button>
+            <button class="wallet-action-btn" onclick="openWalletModal('history')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>History</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Wallets Grid -->
+        <div class="wallets-grid" id="walletsGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- Transaction History -->
+        <div class="transaction-history">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3 style="margin:0">Recent Transactions</h3>
+            <div class="transaction-filters">
+              <button class="filter-btn active" data-filter="all" onclick="filterTransactions('all')">All</button>
+              <button class="filter-btn" data-filter="deposit" onclick="filterTransactions('deposit')">Deposits</button>
+              <button class="filter-btn" data-filter="withdraw" onclick="filterTransactions('withdraw')">Withdrawals</button>
+              <button class="filter-btn" data-filter="transfer" onclick="filterTransactions('transfer')">Transfers</button>
+            </div>
+          </div>
+          <div id="transactionsList" class="transactions-list">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p2p" class="section">
+      <div class="container">
+        <h2>🤝 P2P Trading</h2>
+        <p class="section-lead">Trade directly with other users — zero fees, secure escrow, multiple payment methods</p>
+        
+        <!-- P2P Header Controls -->
+        <div class="p2p-controls">
+          <div class="p2p-tabs">
+            <button class="p2p-tab active" data-tab="buy" onclick="switchP2PTab('buy')">Buy Crypto</button>
+            <button class="p2p-tab" data-tab="sell" onclick="switchP2PTab('sell')">Sell Crypto</button>
+            <button class="p2p-tab" data-tab="my-orders" onclick="switchP2PTab('my-orders')">My Orders</button>
+            <button class="p2p-tab" data-tab="create" onclick="switchP2PTab('create')">Create Ad</button>
+          </div>
+          
+          <div class="p2p-filters">
+            <select id="p2pCurrency" onchange="filterP2POffers()">
+              <option value="USDT">USDT</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="BNB">BNB</option>
+            </select>
+            <select id="p2pPayment" onchange="filterP2POffers()">
+              <option value="all">All Payments</option>
+              <option value="bank">Bank Transfer</option>
+              <option value="mobile">Mobile Money</option>
+              <option value="paypal">PayPal</option>
+              <option value="cash">Cash</option>
+            </select>
+            <select id="p2pFiat" onchange="filterP2POffers()">
+              <option value="NGN">NGN - Nigerian Naira</option>
+              <option value="GHS">GHS - Ghanaian Cedis</option>
+              <option value="USD">USD - US Dollar</option>
+              <option value="EUR">EUR - Euro</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- P2P Buy/Sell Offers -->
+        <div id="p2pOffersSection" class="p2p-offers-section">
+          <div class="offers-header">
+            <div>Advertiser</div>
+            <div>Price</div>
+            <div>Limits</div>
+            <div>Payment</div>
+            <div>Trade</div>
+          </div>
+          <div id="p2pOffersList" class="offers-list">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- My Orders Section -->
+        <div id="myOrdersSection" class="my-orders-section" style="display:none">
+          <div class="orders-tabs">
+            <button class="order-filter-btn active" onclick="filterMyOrders('active')">Active</button>
+            <button class="order-filter-btn" onclick="filterMyOrders('completed')">Completed</button>
+            <button class="order-filter-btn" onclick="filterMyOrders('cancelled')">Cancelled</button>
+          </div>
+          <div id="myOrdersList" class="my-orders-list">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Create Ad Section -->
+        <div id="createAdSection" class="create-ad-section" style="display:none">
+          <div class="create-ad-form">
+            <h3>Create P2P Advertisement</h3>
+            <form onsubmit="return createP2PAd(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>I want to</label>
+                  <select name="type" required>
+                    <option value="sell">Sell Crypto</option>
+                    <option value="buy">Buy Crypto</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Cryptocurrency</label>
+                  <select name="crypto" required>
+                    <option value="USDT">USDT</option>
+                    <option value="BTC">BTC</option>
+                    <option value="ETH">ETH</option>
+                    <option value="BNB">BNB</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Fiat Currency</label>
+                  <select name="fiat" required>
+                    <option value="NGN">NGN - Nigerian Naira</option>
+                    <option value="GHS">GHS - Ghanaian Cedis</option>
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Price per Unit</label>
+                  <input type="number" name="price" required step="0.01" placeholder="0.00">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Minimum Order</label>
+                  <input type="number" name="min" required step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                  <label>Maximum Order</label>
+                  <input type="number" name="max" required step="0.01" placeholder="0.00">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Payment Methods (select multiple)</label>
+                <div class="payment-methods-grid">
+                  <label class="payment-checkbox">
+                    <input type="checkbox" name="payment" value="bank">
+                    <span>Bank Transfer</span>
+                  </label>
+                  <label class="payment-checkbox">
+                    <input type="checkbox" name="payment" value="mobile">
+                    <span>Mobile Money</span>
+                  </label>
+                  <label class="payment-checkbox">
+                    <input type="checkbox" name="payment" value="paypal">
+                    <span>PayPal</span>
+                  </label>
+                  <label class="payment-checkbox">
+                    <input type="checkbox" name="payment" value="cash">
+                    <span>Cash Deposit</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Time Limit (minutes)</label>
+                <select name="timeLimit" required>
+                  <option value="15">15 minutes</option>
+                  <option value="30">30 minutes</option>
+                  <option value="45">45 minutes</option>
+                  <option value="60">60 minutes</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Terms & Conditions (Optional)</label>
+                <textarea name="terms" rows="3" placeholder="Add any specific terms for your trade..."></textarea>
+              </div>
+
+              <button type="submit" class="form-submit">Publish Advertisement</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="giftcards" class="section alt">`
+      <div class="container">
+        <h2>Gift Cards</h2>
+        <p class="section-lead">Buy and sell popular gift cards — Amazon, Steam, Apple, Google Play.</p>
+        <div class="grid">
+          <div class="card giftcard-card" data-giftcard="buy">
+            <h3>Buy Gift Cards</h3>
+            <p>Instant delivery and crypto checkout.</p>
+            <button class="btn-feature">Browse Cards →</button>
+          </div>
+          <div class="card giftcard-card" data-giftcard="sell">
+            <h3>Sell Gift Cards</h3>
+            <p>Upload code or image, get paid in crypto or fiat after admin verification.</p>
+            <button class="btn-feature">Sell Now →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="referral" class="section alt">
+      <div class="container">
+        <h2>💰 Referral Program - Earn Together</h2>
+        <p class="section-lead">Invite friends and earn up to 30% commission on their trading fees for life!</p>
+        <div class="referral-hero">
+          <div class="referral-stats">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-value">0</div>
+              <div class="stat-label">Referrals</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💵</div>
+              <div class="stat-value">$0.00</div>
+              <div class="stat-label">Total Earned</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📈</div>
+              <div class="stat-value">30%</div>
+              <div class="stat-label">Commission Rate</div>
+            </div>
+          </div>
+          <div class="referral-card card">
+            <h3>Get Your Referral Link</h3>
+            <p>Share your unique link and start earning commission on every trade!</p>
+            <button class="btn-feature" onclick="openReferralModal()">Generate My Link →</button>
+          </div>
+        </div>
+        <div class="referral-benefits">
+          <h3>How It Works</h3>
+          <div class="grid">
+            <div class="card">
+              <div style="font-size:2rem;margin-bottom:10px">🔗</div>
+              <h3>1. Share Your Link</h3>
+              <p>Copy your unique referral link and share it with friends via social media, WhatsApp, or email.</p>
+            </div>
+            <div class="card">
+              <div style="font-size:2rem;margin-bottom:10px">✅</div>
+              <h3>2. Friends Sign Up</h3>
+              <p>When someone registers using your link, they become your referral automatically.</p>
+            </div>
+            <div class="card">
+              <div style="font-size:2rem;margin-bottom:10px">💸</div>
+              <h3>3. Earn Commission</h3>
+              <p>You earn 30% of all trading fees from your referrals - paid instantly to your wallet!</p>
+            </div>
+          </div>
+        </div>
+        <div class="referral-tiers">
+          <h3>Commission Tiers</h3>
+          <div class="tier-grid">
+            <div class="tier-card active tier-clickable" data-tier="starter">
+              <div class="tier-name">🥉 Starter</div>
+              <div class="tier-target">0-9 Referrals</div>
+              <div class="tier-commission">20% Commission</div>
+              <button class="tier-btn">View Details →</button>
+            </div>
+            <div class="tier-card tier-clickable" data-tier="pro">
+              <div class="tier-name">🥈 Pro</div>
+              <div class="tier-target">10-49 Referrals</div>
+              <div class="tier-commission">30% Commission</div>
+              <button class="tier-btn">View Details →</button>
+            </div>
+            <div class="tier-card tier-clickable" data-tier="elite">
+              <div class="tier-name">🥇 Elite</div>
+              <div class="tier-target">50+ Referrals</div>
+              <div class="tier-commission">40% Commission</div>
+              <button class="tier-btn">View Details →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tech" class="section alt">
+      <div class="container">
+        <h2>Tech Stack</h2>
+        <p class="section-lead">Designed with modern, battle-tested tools.</p>
+        <ul class="tech-list">
+          <li>Frontend: React.js, Tailwind (prototype uses static HTML/CSS)</li>
+          <li>Backend: Node.js, Express</li>
+          <li>Database: PostgreSQL</li>
+          <li>Blockchain: Web3.js (Ethereum, BSC)</li>
+          <li>Payments: Paystack, Flutterwave</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact" class="section container">
+      <h2>Get in Touch</h2>
+      <p>Email <a href="mailto:lifeisprecious044@gmail.com">lifeisprecious044@gmail.com</a> for early access and partnership inquiries.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div>© RFEX — Built for Africa. MIT License.</div>
+      <div class="footer-links"><a href="#">Privacy</a> · <a href="#">Terms</a></div>
+    </div>
+  </footer>
+
+  <!-- Modal for feature forms -->
+  <div id="featureModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2 id="modalTitle">Feature Form</h2>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
