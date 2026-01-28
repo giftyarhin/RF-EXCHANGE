@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Currency Converter - RFEX</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <meta name="description" content="Convert cryptocurrencies and fiat currencies instantly">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    .converter-page {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      min-height: 100vh;
+    }
+
+    .converter-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .converter-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .converter-header h1 {
+      font-size: 2rem;
+      color: #F1F5F9;
+      margin-bottom: 10px;
+    }
+
+    .converter-header p {
+      color: #94A3B8;
+      font-size: 1rem;
+    }
+
+    .converter-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 183, 3, 0.1);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .converter-section {
+      margin-bottom: 20px;
+    }
+
+    .converter-label {
+      display: block;
+      font-size: 0.9rem;
+      color: #94A3B8;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .converter-input-group {
+      display: flex;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 4px;
+      transition: all 0.3s;
+    }
+
+    .converter-input-group:focus-within {
+      border-color: #FFB703;
+      box-shadow: 0 0 0 3px rgba(255, 183, 3, 0.1);
+    }
+
+    .converter-amount {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 16px;
+      font-size: 1.5rem;
+      color: #F1F5F9;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .converter-amount::placeholder {
+      color: #64748B;
+    }
+
+    .converter-select-wrapper {
+      position: relative;
+      min-width: 140px;
+    }
+
+    .converter-select {
+      width: 100%;
+      background: rgba(255, 183, 3, 0.1);
+      border: 1px solid rgba(255, 183, 3, 0.2);
+      border-radius: 8px;
+      padding: 12px 36px 12px 12px;
+      color: #F1F5F9;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      appearance: none;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .converter-select:hover {
+      background: rgba(255, 183, 3, 0.15);
+      border-color: #FFB703;
+    }
+
+    .converter-select-wrapper::after {
+      content: '▼';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #FFB703;
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+
+    .swap-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #FFB703, #F59E0B);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      margin: 20px auto;
+      box-shadow: 0 4px 12px rgba(255, 183, 3, 0.3);
+      transition: all 0.3s;
+    }
+
+    .swap-button:hover {
+      transform: rotate(180deg) scale(1.1);
+      box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
+    }
+
+    .swap-button svg {
+      width: 24px;
+      height: 24px;
+      stroke: #0F172A;
+      stroke-width: 2.5;
+    }
+
+    .conversion-rate {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .rate-label {
+      font-size: 0.85rem;
+      color: #94A3B8;
+      margin-bottom: 8px;
+    }
+
+    .rate-value {
+      font-size: 1.2rem;
+      color: #FFB703;
+      font-weight: 600;
+    }
+
+    .quick-amounts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .quick-amount-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 10px;
+      color: #F1F5F9;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .quick-amount-btn:hover {
+      background: rgba(255, 183, 3, 0.1);
+      border-color: #FFB703;
+    }
+
+    .popular-pairs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .pair-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .pair-card:hover {
+      background: rgba(255, 183, 3, 0.1);
+      border-color: #FFB703;
+      transform: translateY(-2px);
+    }
+
+    .pair-name {
+      font-size: 0.95rem;
+      color: #F1F5F9;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .pair-rate {
+      font-size: 0.85rem;
+      color: #94A3B8;
+    }
+
+    @media (max-width: 640px) {
+      .converter-card {
+        padding: 24px;
+      }
+
+      .converter-amount {
+        font-size: 1.2rem;
+      }
+
+      .quick-amounts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .popular-pairs {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="dashboard-page converter-page">
+  <header class="dashboard-header">
+    <div class="header-inner">
+      <button class="nav-toggle" onclick="toggleDashboardNav()" aria-label="Toggle navigation">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <a class="brand" href="dashboard.html">RFEX</a>
+      <nav class="main-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="markets.html">Markets</a>
+        <a href="trading.html">Trade</a>
+        <a href="converter.html" class="active">Convert</a>
+        <a href="wallets.html">Wallets</a>
+        <a href="p2p.html">P2P</a>
+        <a href="gift-cards.html">Gift Cards</a>
+      </nav>
+      <div class="header-actions">
+        <button class="notification-btn" onclick="toggleNotifications()" aria-label="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+        <div class="user-menu">
+          <button class="user-btn" onclick="toggleUserMenu()">
+            <div class="user-avatar">JD</div>
+            <span>John Doe</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="converter-container">
+    <div class="converter-header">
+      <h1>💱 Currency Converter</h1>
+      <p>Convert between cryptocurrencies and fiat currencies instantly</p>
+    </div>
+
+    <div class="converter-card">
+      <!-- From Currency -->
+      <div class="converter-section">
+        <label class="converter-label">From</label>
+        <div class="converter-input-group">
+          <input 
+            type="number" 
+            id="fromAmount" 
+            class="converter-amount" 
+            placeholder="0.00" 
+            value="1"
+            oninput="convertCurrency()"
+          >
+          <div class="converter-select-wrapper">
+            <select id="fromCurrency" class="converter-select" onchange="convertCurrency()">
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="USDT">USDT</option>
+              <option value="BNB">BNB</option>
+              <option value="USD" selected>USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="GHS">GHS</option>
+              <option value="NGN">NGN</option>
+              <option value="KES">KES</option>
+              <option value="ZAR">ZAR</option>
+            </select>
+          </div>
+        </div>
+        <div class="quick-amounts">
+          <button class="quick-amount-btn" onclick="setAmount(100)">100</button>
+          <button class="quick-amount-btn" onclick="setAmount(500)">500</button>
+          <button class="quick-amount-btn" onclick="setAmount(1000)">1K</button>
+          <button class="quick-amount-btn" onclick="setAmount(5000)">5K</button>
+        </div>
+      </div>
+
+      <!-- Swap Button -->
+      <button class="swap-button" onclick="swapCurrencies()">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M7 10L12 15L17 10" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17 14L12 9L7 14" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- To Currency -->
+      <div class="converter-section">
+        <label class="converter-label">To</label>
+        <div class="converter-input-group">
+          <input 
+            type="number" 
+            id="toAmount" 
+            class="converter-amount" 
+            placeholder="0.00" 
+            readonly
+          >
+          <div class="converter-select-wrapper">
+            <select id="toCurrency" class="converter-select" onchange="convertCurrency()">
+              <option value="BTC" selected>BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="USDT">USDT</option>
+              <option value="BNB">BNB</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="GHS">GHS</option>
+              <option value="NGN">NGN</option>
+              <option value="KES">KES</option>
+              <option value="ZAR">ZAR</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion Rate -->
+      <div class="conversion-rate">
+        <div class="rate-label">Exchange Rate</div>
+        <div class="rate-value" id="exchangeRate">1 USD = 0.00001015 BTC</div>
+      </div>
+    </div>
+
+    <!-- Popular Pairs -->
+    <div class="converter-card">
+      <h3 style="color: #F1F5F9; margin-bottom: 20px;">Popular Pairs</h3>
+      <div class="popular-pairs">
+        <div class="pair-card" onclick="setPair('BTC', 'USD')">
+          <div class="pair-name">BTC → USD</div>
+          <div class="pair-rate" id="rate-BTC-USD">1 BTC = $98,450</div>
+        </div>
+        <div class="pair-card" onclick="setPair('ETH', 'USD')">
+          <div class="pair-name">ETH → USD</div>
+          <div class="pair-rate" id="rate-ETH-USD">1 ETH = $3,420</div>
+        </div>
+        <div class="pair-card" onclick="setPair('USD', 'GHS')">
+          <div class="pair-name">USD → GHS</div>
+          <div class="pair-rate" id="rate-USD-GHS">1 USD = ₵15.50</div>
+        </div>
+        <div class="pair-card" onclick="setPair('USD', 'NGN')">
+          <div class="pair-name">USD → NGN</div>
+          <div class="pair-rate" id="rate-USD-NGN">1 USD = ₦1,520</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/dashboard.js"></script>
+  <script>
+    // Exchange rates (base: USD)
+    const exchangeRates = {
+      BTC: 0.00001015, // 1 USD = 0.00001015 BTC
+      ETH: 0.00029239, // 1 USD = 0.00029239 ETH
+      USDT: 1.00,
+      BNB: 0.001626,
+      USD: 1,
+      EUR: 0.92,
+      GBP: 0.79,
+      GHS: 15.50,
+      NGN: 1520,
+      KES: 129,
+      ZAR: 18.50
+    };
+
+    // Convert currency
+    function convertCurrency() {
+      const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
+      const fromCurrency = document.getElementById('fromCurrency').value;
+      const toCurrency = document.getElementById('toCurrency').value;
+
+      // Convert to USD first, then to target currency
+      const usdAmount = fromAmount / exchangeRates[fromCurrency];
+      const result = usdAmount * exchangeRates[toCurrency];
+
+      // Update result
+      document.getElementById('toAmount').value = result.toFixed(8);
+
+      // Update exchange rate display
+      const rate = exchangeRates[toCurrency] / exchangeRates[fromCurrency];
+      const rateText = `1 ${fromCurrency} = ${formatNumber(rate, toCurrency)} ${toCurrency}`;
+      document.getElementById('exchangeRate').textContent = rateText;
+    }
+
+    // Format number based on currency
+    function formatNumber(num, currency) {
+      if (['BTC', 'ETH'].includes(currency)) {
+        return num.toFixed(8);
+      } else if (currency === 'USDT') {
+        return num.toFixed(4);
+      } else {
+        return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    }
+
+    // Swap currencies
+    function swapCurrencies() {
+      const fromSelect = document.getElementById('fromCurrency');
+      const toSelect = document.getElementById('toCurrency');
+      
+      const temp = fromSelect.value;
+      fromSelect.value = toSelect.value;
+      toSelect.value = temp;
+      
+      convertCurrency();
+    }
+
+    // Set amount
+    function setAmount(amount) {
+      document.getElementById('fromAmount').value = amount;
+      convertCurrency();
+    }
+
+    // Set currency pair
+    function setPair(from, to) {
+      document.getElementById('fromCurrency').value = from;
+      document.getElementById('toCurrency').value = to;
+      convertCurrency();
+    }
+
+    // Update popular pairs rates periodically
+    function updatePopularRates() {
+      const btcUsd = 1 / exchangeRates.BTC;
+      const ethUsd = 1 / exchangeRates.ETH;
+      const usdGhs = exchangeRates.GHS;
+      const usdNgn = exchangeRates.NGN;
+
+      document.getElementById('rate-BTC-USD').textContent = `1 BTC = $${btcUsd.toLocaleString()}`;
+      document.getElementById('rate-ETH-USD').textContent = `1 ETH = $${ethUsd.toLocaleString()}`;
+      document.getElementById('rate-USD-GHS').textContent = `1 USD = ₵${usdGhs.toFixed(2)}`;
+      document.getElementById('rate-USD-NGN').textContent = `1 USD = ₦${usdNgn.toLocaleString()}`;
+    }
+
+    // Initialize
+    convertCurrency();
+    updatePopularRates();
+
+    // Simulate live rate updates
+    setInterval(() => {
+      // Small random fluctuations
+      Object.keys(exchangeRates).forEach(key => {
+        if (key !== 'USD' && key !== 'USDT') {
+          const fluctuation = (Math.random() - 0.5) * 0.002; // ±0.2%
+          exchangeRates[key] *= (1 + fluctuation);
+        }
+      });
+      convertCurrency();
+      updatePopularRates();
+    }, 5000);
+  </script>
+</body>
+</html>
