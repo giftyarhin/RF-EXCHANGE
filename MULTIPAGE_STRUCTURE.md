@@ -46,6 +46,30 @@
 
 ---
 
+## ⚠️ IMPORTANT: Security Notice
+
+**This is a DEMO application with significant security limitations:**
+
+### Current Limitations:
+- ❌ **localStorage Authentication**: Session data stored in browser localStorage (vulnerable to XSS)
+- ❌ **Demo Credentials**: Login accepts any credentials for testing purposes
+- ❌ **No Server-Side Validation**: All auth checks are client-side only (can be bypassed via DevTools)
+- ❌ **No CSRF Protection**: No cross-site request forgery tokens
+- ❌ **Client-Side Sessions**: Session state managed entirely in browser
+
+### Required for Production:
+- ✅ **Server-Side Authentication**: Implement proper backend auth service
+- ✅ **httpOnly Cookies or JWT**: Use secure, httpOnly cookies with Secure/SameSite flags
+- ✅ **CSRF Protection**: Add CSRF tokens to all state-changing requests
+- ✅ **Credential Validation**: Hash passwords with bcrypt/argon2, validate against database
+- ✅ **HTTPS Only**: Enforce TLS/SSL for all connections
+- ✅ **Rate Limiting**: Prevent brute-force attacks
+- ✅ **Session Expiration**: Implement proper session timeout and refresh mechanisms
+
+**See the "Backend Integration" section below for the detailed production roadmap.**
+
+---
+
 ## 🎨 Styling Files
 
 ### **auth.css**
@@ -98,20 +122,34 @@ Dashboard-specific functionality:
 2. Fills out registration form
 3. Password strength is checked in real-time
 4. Passwords are validated for matching
-5. On submit → User data stored in localStorage (demo)
+5. On submit → **⚠️ DEMO ONLY**: User data stored in localStorage (testing only)
 6. Redirects to `dashboard.html`
+
+**⚠️ SECURITY WARNING**: localStorage storage is for demo/testing purposes only and MUST NOT be used in production. Use server-side sessions or JWT tokens with httpOnly cookies instead.
 
 ### **Login Process:**
 1. User visits `login.html`
 2. Enters email and password
-3. On submit → Validates credentials (demo accepts any)
-4. Stores user session in localStorage
+3. On submit → **⚠️ DEMO ONLY**: Demo accepts any credentials for testing purposes
+4. Stores user session in localStorage (demo only)
 5. Redirects to `dashboard.html`
+
+**⚠️ SECURITY WARNING**: The demo login accepts any credentials for testing only. Production implementations must:
+- Validate credentials against a secure database
+- Use bcrypt or argon2 for password hashing
+- Implement rate limiting to prevent brute-force attacks
+- Return generic error messages to prevent user enumeration
 
 ### **Session Protection:**
 - Dashboard and trading pages check for authentication
 - If not logged in → redirects to `login.html`
 - If logged in and visits login/register → redirects to dashboard
+
+**⚠️ CLIENT-SIDE ONLY**: These are UX-level protections for demo purposes and can be bypassed via browser DevTools. Production must implement:
+- **Server-side route guards**: Backend validates JWT/session on every protected endpoint
+- **httpOnly cookies**: Prevent JavaScript access to session tokens
+- **Token refresh**: Secure, Secure/SameSite cookies with automatic refresh
+- **Session validation**: Verify token signature, expiration, and user status on each request
 
 ### **Logout Process:**
 1. Click user menu → Logout
@@ -146,9 +184,12 @@ RFEX/public/
 
 ## 🚀 How to Test
 
+### **Prerequisites**
+Navigate to the RFEX project root directory before running these commands.
+
 ### **1. Start the Server**
 ```bash
-cd /Users/alorzigy/Desktop/RFEX/public
+cd public
 python3 -m http.server 8000
 ```
 
@@ -221,9 +262,15 @@ python3 -m http.server 8000
 ### ✅ **Security**
 - Password visibility toggle
 - Form validation
-- Session checking
-- Protected routes
+- Session checking (client-side UX only)
+- Protected routes (client-side UX only)
 - Auto-logout option
+
+**⚠️ Note**: The security features listed above are **client-side UX protections only** and can be bypassed via browser DevTools. They provide a good user experience but do not constitute real security. Production applications must implement:
+- **Server-side enforcement**: JWT/session validation on every API request
+- **Server-side route guards**: Backend verifies authentication before serving protected resources
+- **httpOnly cookies**: Store session tokens securely, inaccessible to JavaScript
+- **Token validation**: Verify signature, expiration, and user permissions server-side
 
 ---
 
@@ -276,10 +323,21 @@ python3 -m http.server 8000
 
 ## 💾 Demo Data
 
-### **localStorage Keys:**
-- `rfex_user` - User session data
+**⚠️ SECURITY WARNING**: Storing authentication state (e.g., the `rfex_user` localStorage key and the `loggedIn` flag) in localStorage is **INSECURE for production** and exposes your application to XSS attacks.
 
-### **Sample User Object:**
+### Production Requirements:
+Instead of localStorage for authentication, use:
+- **httpOnly cookies**: Server-set cookies that JavaScript cannot access
+- **Secure flag**: Ensure cookies are only sent over HTTPS
+- **SameSite flag**: Prevent CSRF attacks (use `SameSite=Strict` or `SameSite=Lax`)
+- **Server-side session validation**: Validate session/JWT on every protected API request
+- **Proper session expiration**: Implement token refresh, idle timeout, and absolute timeout
+- **Never store sensitive data client-side**: Do not store tokens, passwords, or PII in localStorage
+
+### **localStorage Keys (Demo Only):**
+- `rfex_user` - User session data (demo/testing only - DO NOT use in production)
+
+### **Sample User Object (Demo Only):**
 ```javascript
 {
   email: "user@example.com",
@@ -350,7 +408,7 @@ All pages are fully responsive and work on all devices.
 
 ## 📧 Contact
 
-**Email:** lifeisprecious044@gmail.com  
+**Issues & Support:** https://github.com/giftyarhin/RF-EXCHANGE/issues  
 **Repository:** https://github.com/giftyarhin/RF-EXCHANGE  
 **Date:** January 27, 2026
 

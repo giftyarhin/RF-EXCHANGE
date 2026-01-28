@@ -27,14 +27,14 @@
         <a href="gift-cards.html">Gift Cards</a>
       </nav>
       <div class="header-actions">
-        <button class="notification-btn">
+        <button class="notification-btn" aria-label="View notifications">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
         </button>
         <div class="user-menu">
-          <button class="user-btn">
+          <button class="user-btn" aria-label="User menu">
             <div class="user-avatar">JD</div>
             <span>John Doe</span>
           </button>
@@ -60,21 +60,21 @@
         </div>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <select id="cryptoFilter" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9;">
+          <select id="cryptoFilter" aria-label="Filter by cryptocurrency" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9;">
             <option value="all">All Cryptocurrencies</option>
             <option value="USDT" selected>USDT</option>
             <option value="BTC">BTC</option>
             <option value="ETH">ETH</option>
             <option value="BNB">BNB</option>
           </select>
-          <select id="paymentFilter" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9;">
+          <select id="paymentFilter" aria-label="Filter by payment method" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9;">
             <option value="all">All Payment Methods</option>
             <option value="bank">Bank Transfer</option>
             <option value="mobile">Mobile Money (MTN, Vodafone, Airtel)</option>
             <option value="paypal">PayPal</option>
             <option value="cash">Cash Deposit</option>
           </select>
-          <select id="fiatFilter" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9;">
+          <select id="fiatFilter" aria-label="Filter by fiat currency" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9;">
             <option value="all">All Currencies</option>
             <option value="NGN">🇳🇬 NGN - Nigerian Naira</option>
             <option value="GHS">🇬🇭 GHS - Ghanaian Cedis</option>

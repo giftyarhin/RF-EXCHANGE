@@ -85,7 +85,7 @@
       </div>
 
       <!-- Trading Interface -->
-      <div style="display: grid; grid-template-columns: 1fr 350px; gap: 20px;">
+      <div class="trading-grid">
         
         <!-- Left Side: Chart & Order Book -->
         <div>
@@ -196,9 +196,9 @@
 
             <!-- Order Type -->
             <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-              <button style="padding: 8px 16px; background: rgba(255, 183, 3, 0.2); border: 1px solid rgba(255, 183, 3, 0.5); border-radius: 6px; color: #FFB703; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Limit</button>
-              <button style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #94A3B8; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Market</button>
-              <button style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #94A3B8; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Stop-Limit</button>
+              <button id="limitBtn" onclick="selectOrderType('limit')" style="padding: 8px 16px; background: rgba(255, 183, 3, 0.2); border: 1px solid rgba(255, 183, 3, 0.5); border-radius: 6px; color: #FFB703; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Limit</button>
+              <button id="marketBtn" onclick="selectOrderType('market')" style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #94A3B8; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Market</button>
+              <button id="stopLimitBtn" onclick="selectOrderType('stop-limit')" style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #94A3B8; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Stop-Limit</button>
             </div>
 
             <!-- Available Balance -->
@@ -209,14 +209,14 @@
 
             <!-- Price Input -->
             <div style="margin-bottom: 16px;">
-              <label style="display: block; font-size: 0.85rem; color: #94A3B8; margin-bottom: 8px;">Price (USDT)</label>
-              <input type="number" value="42150.50" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
+              <label for="priceInput" style="display: block; font-size: 0.85rem; color: #94A3B8; margin-bottom: 8px;">Price (USDT)</label>
+              <input id="priceInput" type="number" value="42150.50" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
             </div>
 
             <!-- Amount Input -->
             <div style="margin-bottom: 16px;">
-              <label style="display: block; font-size: 0.85rem; color: #94A3B8; margin-bottom: 8px;">Amount (BTC)</label>
-              <input type="number" placeholder="0.00" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
+              <label for="amountInput" style="display: block; font-size: 0.85rem; color: #94A3B8; margin-bottom: 8px;">Amount (BTC)</label>
+              <input id="amountInput" type="number" placeholder="0.00" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
               <div style="display: flex; gap: 8px; margin-top: 8px;">
                 <button style="flex: 1; padding: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #94A3B8; font-size: 0.8rem; cursor: pointer;">25%</button>
                 <button style="flex: 1; padding: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #94A3B8; font-size: 0.8rem; cursor: pointer;">50%</button>
@@ -258,6 +258,7 @@
     function switchOrderType(type) {
       const buyTab = document.getElementById('buyTab');
       const sellTab = document.getElementById('sellTab');
+      const buyButton = document.querySelector('[onclick*="Order execution"]');
       
       if (type === 'buy') {
         buyTab.style.background = 'rgba(16, 185, 129, 0.2)';
@@ -266,6 +267,10 @@
         sellTab.style.background = 'rgba(255, 255, 255, 0.05)';
         sellTab.style.borderColor = 'rgba(255, 255, 255, 0.1)';
         sellTab.style.color = '#F1F5F9';
+        if (buyButton) {
+          buyButton.textContent = 'Buy BTC';
+          buyButton.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        }
       } else {
         sellTab.style.background = 'rgba(239, 68, 68, 0.2)';
         sellTab.style.borderColor = 'rgba(239, 68, 68, 0.5)';
@@ -273,6 +278,47 @@
         buyTab.style.background = 'rgba(255, 255, 255, 0.05)';
         buyTab.style.borderColor = 'rgba(255, 255, 255, 0.1)';
         buyTab.style.color = '#F1F5F9';
+        if (buyButton) {
+          buyButton.textContent = 'Sell BTC';
+          buyButton.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        }
+      }
+    }
+
+    function fillPercentage(percent) {
+      const availableBalance = 11234.56;
+      const currentPrice = parseFloat(document.getElementById('priceInput').value) || 42150.50;
+      const amountInput = document.getElementById('amountInput');
+      const maxAmount = (availableBalance * (percent / 100)) / currentPrice;
+      amountInput.value = maxAmount.toFixed(8);
+    }
+
+    function selectOrderType(type) {
+      const limitBtn = document.getElementById('limitBtn');
+      const marketBtn = document.getElementById('marketBtn');
+      const stopLimitBtn = document.getElementById('stopLimitBtn');
+      const priceInput = document.getElementById('priceInput');
+      
+      // Reset all buttons
+      [limitBtn, marketBtn, stopLimitBtn].forEach(btn => {
+        btn.style.background = 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        btn.style.color = '#94A3B8';
+      });
+      
+      // Highlight selected button
+      const selectedBtn = type === 'limit' ? limitBtn : type === 'market' ? marketBtn : stopLimitBtn;
+      selectedBtn.style.background = 'rgba(255, 183, 3, 0.2)';
+      selectedBtn.style.borderColor = 'rgba(255, 183, 3, 0.5)';
+      selectedBtn.style.color = '#FFB703';
+      
+      // Toggle price input based on order type
+      if (type === 'market') {
+        priceInput.disabled = true;
+        priceInput.style.opacity = '0.5';
+      } else {
+        priceInput.disabled = false;
+        priceInput.style.opacity = '1';
       }
     }
   </script>

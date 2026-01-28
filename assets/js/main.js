@@ -239,12 +239,24 @@
   
   // Mobile nav toggle
   navToggle && navToggle.addEventListener('click', ()=>{
-    if(nav.style.display === 'flex'){
-      nav.style.display = '';
-    } else {
-      nav.style.display = 'flex';
+    nav.classList.toggle('active');
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (nav && !nav.contains(e.target) && !navToggle.contains(e.target)) {
+      nav.classList.remove('active');
     }
   });
+
+  // Close mobile menu when clicking a link
+  if (nav) {
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('active');
+      });
+    });
+  }
 
   // Smooth scroll for nav links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -254,8 +266,8 @@
       if(target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         // Close mobile nav if open
-        if(window.innerWidth <= 900 && nav.style.display === 'flex') {
-          nav.style.display = '';
+        if(window.innerWidth <= 900 && nav && nav.classList.contains('active')) {
+          nav.classList.remove('active');
         }
       }
     });
@@ -1541,10 +1553,12 @@
     // Convert pair format (BTC/USDT -> BTCUSDT)
     const symbol = currentPair.replace('/', '');
     
-    // Update symbol in TradingView widget
-    tradingViewWidget.setSymbol('BINANCE:' + symbol, '15', function() {
-      console.log('✅ TradingView chart updated to:', symbol);
-    });
+    // Update symbol in TradingView widget using activeChart()
+    if (tradingViewWidget.activeChart) {
+      tradingViewWidget.activeChart().setSymbol('BINANCE:' + symbol, function() {
+        console.log('✅ TradingView chart updated to:', symbol);
+      });
+    }
   }
 
   // Start live price updates
@@ -1579,7 +1593,9 @@
         price: data.price
       });
       if (chartData.length > 24) chartData.shift();
-      drawChart();
+      if (typeof drawChart === 'function') {
+        drawChart();
+      }
       
       // Add recent trade
       addRecentTrade();
@@ -1912,7 +1928,7 @@
   }
 
   // Refresh wallet balances
-  window.refreshWalletBalances = function() {
+  window.refreshWalletBalances = function(event) {
     // Simulate balance update
     wallets.forEach(wallet => {
       const change = (Math.random() - 0.5) * 0.02;
@@ -1923,12 +1939,18 @@
     updatePortfolioValue();
     
     // Show success message
-    const btn = event.target.closest('.refresh-btn');
-    btn.style.transform = 'rotate(720deg)';
-    setTimeout(() => {
-      btn.style.transform = '';
-      showNotification('Balances refreshed successfully!', 'success');
-    }, 600);
+    if (event && event.target) {
+      const btn = event.target.closest('.refresh-btn');
+      if (btn) {
+        btn.style.transform = 'rotate(720deg)';
+        setTimeout(() => {
+          btn.style.transform = '';
+          if (typeof showNotification === 'function') {
+            showNotification('Balances refreshed successfully!', 'success');
+          }
+        }, 600);
+      }
+    }
   };
 
   // Open wallet modal

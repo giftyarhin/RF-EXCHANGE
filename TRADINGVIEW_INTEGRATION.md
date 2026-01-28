@@ -8,7 +8,17 @@ Successfully integrated **TradingView Advanced Charts** API into the RFEX tradin
 ## What Was Changed
 
 ### 1. **HTML Structure** (`public/index.html`)
-- ✅ Added TradingView library script: `https://s3.tradingview.com/tv.js`
+- ✅ Added TradingView library script with Subresource Integrity (SRI): `https://s3.tradingview.com/tv.js`
+  ```html
+  <script src="https://s3.tradingview.com/tv.js" 
+          integrity="sha384-[HASH_TO_BE_GENERATED]" 
+          crossorigin="anonymous"></script>
+  ```
+  **Note**: Generate the SHA-384 hash using:
+  ```bash
+  curl -s https://s3.tradingview.com/tv.js | openssl dgst -sha384 -binary | openssl base64 -A
+  ```
+  Update the integrity attribute with the generated hash for Subresource Integrity protection.
 - ✅ Replaced `<canvas>` element with a `<div>` container for TradingView widget
 - ✅ Chart container now has proper sizing: `width: 100%; height: 100%;`
 
@@ -134,7 +144,7 @@ Updates the chart when user switches trading pairs:
 ### **To Test the Integration:**
 1. **Start the server** (if not running):
    ```bash
-   cd /Users/alorzigy/Desktop/RFEX/public
+   cd public
    python3 -m http.server 8000
    ```
 
@@ -229,8 +239,14 @@ Chart automatically adjusts to container size and provides touch-friendly contro
 ## License & Attribution
 
 **TradingView:**
-- The TradingView library is free to use for non-commercial projects
-- For commercial use, check TradingView's licensing terms
+- The TradingView Charting Library is free to use for non-commercial projects
+- **Commercial Use Requires License**: RFEX's commercial use requires a TradingView commercial license
+- **Action Required**: Obtain appropriate commercial license from TradingView
+  - License Type: TradingView Advanced Charts Commercial License
+  - Contact: https://www.tradingview.com/widget-docs/
+  - Licensing: https://www.tradingview.com/chart-library-pricing/
+- **Compliance**: Before production deployment, verify licensing with TradingView and obtain written permission or purchase the appropriate license tier
+- **Alternative**: If commercial license cannot be obtained, consider open-source alternatives (Lightweight Charts, Chart.js, Apache ECharts)
 - Attribution is recommended (TradingView branding is visible on chart)
 
 **RFEX:**
@@ -252,6 +268,6 @@ Chart automatically adjusts to container size and provides touch-friendly contro
 
 ---
 
-**Contact:** lifeisprecious044@gmail.com  
+**Support:** support@rfex.app  
 **Repository:** https://github.com/giftyarhin/RF-EXCHANGE  
 **Date:** January 27, 2026
