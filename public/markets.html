@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Markets - RFEX</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="header-inner">
+      <a class="brand" href="dashboard.html">RFEX</a>
+      <button class="nav-toggle" onclick="toggleDashboardNav()" aria-label="Toggle navigation">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <nav class="main-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="markets.html" class="active">Markets</a>
+        <a href="trading.html">Trade</a>
+        <a href="wallets.html">Wallets</a>
+        <a href="p2p.html">P2P</a>
+        <a href="gift-cards.html">Gift Cards</a>
+      </nav>
+      <div class="header-actions">
+        <button class="notification-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </button>
+        <div class="user-menu">
+          <button class="user-btn">
+            <div class="user-avatar">JD</div>
+            <span>John Doe</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="container">
+      <div class="page-header">
+        <h1>📊 Markets</h1>
+        <p class="page-subtitle">Real-time cryptocurrency prices and market data</p>
+      </div>
+
+      <!-- Market Stats -->
+      <div class="portfolio-section" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 32px;">
+        <div class="portfolio-card">
+          <h3 style="color: #94A3B8; font-size: 0.85rem; margin: 0 0 8px 0;">Market Cap</h3>
+          <div style="font-size: 1.5rem; font-weight: 700;">$2.1T</div>
+          <div style="color: #10b981; font-size: 0.85rem;">+2.4%</div>
+        </div>
+        <div class="portfolio-card">
+          <h3 style="color: #94A3B8; font-size: 0.85rem; margin: 0 0 8px 0;">24h Volume</h3>
+          <div style="font-size: 1.5rem; font-weight: 700;">$89.5B</div>
+          <div style="color: #10b981; font-size: 0.85rem;">+5.2%</div>
+        </div>
+        <div class="portfolio-card">
+          <h3 style="color: #94A3B8; font-size: 0.85rem; margin: 0 0 8px 0;">BTC Dominance</h3>
+          <div style="font-size: 1.5rem; font-weight: 700;">48.5%</div>
+          <div style="color: #ef4444; font-size: 0.85rem;">-0.3%</div>
+        </div>
+        <div class="portfolio-card">
+          <h3 style="color: #94A3B8; font-size: 0.85rem; margin: 0 0 8px 0;">Active Pairs</h3>
+          <div style="font-size: 1.5rem; font-weight: 700;">450+</div>
+          <div style="color: #94A3B8; font-size: 0.85rem;">Trading</div>
+        </div>
+      </div>
+
+      <!-- Market List -->
+      <div class="dashboard-section">
+        <h2>Top Markets</h2>
+        <div style="background: rgba(30, 41, 59, 0.6); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: rgba(15, 23, 42, 0.8);">
+              <tr>
+                <th style="padding: 16px; text-align: left; color: #94A3B8; font-weight: 600;">#</th>
+                <th style="padding: 16px; text-align: left; color: #94A3B8; font-weight: 600;">Name</th>
+                <th style="padding: 16px; text-align: right; color: #94A3B8; font-weight: 600;">Price</th>
+                <th style="padding: 16px; text-align: right; color: #94A3B8; font-weight: 600;">24h Change</th>
+                <th style="padding: 16px; text-align: right; color: #94A3B8; font-weight: 600;">24h Volume</th>
+                <th style="padding: 16px; text-align: right; color: #94A3B8; font-weight: 600;">Market Cap</th>
+                <th style="padding: 16px; text-align: center; color: #94A3B8; font-weight: 600;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <td style="padding: 16px;">1</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: #F7931A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">₿</div>
+                    <div>
+                      <div style="font-weight: 600;">Bitcoin</div>
+                      <div style="color: #94A3B8; font-size: 0.85rem;">BTC</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 16px; text-align: right; font-weight: 600;">$42,150.00</td>
+                <td style="padding: 16px; text-align: right; color: #10b981; font-weight: 600;">+3.24%</td>
+                <td style="padding: 16px; text-align: right;">$24.5B</td>
+                <td style="padding: 16px; text-align: right;">$825.3B</td>
+                <td style="padding: 16px; text-align: center;">
+                  <button onclick="window.location.href='trading.html'" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Trade</button>
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <td style="padding: 16px;">2</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: #627EEA; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">Ξ</div>
+                    <div>
+                      <div style="font-weight: 600;">Ethereum</div>
+                      <div style="color: #94A3B8; font-size: 0.85rem;">ETH</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 16px; text-align: right; font-weight: 600;">$2,234.50</td>
+                <td style="padding: 16px; text-align: right; color: #10b981; font-weight: 600;">+2.15%</td>
+                <td style="padding: 16px; text-align: right;">$12.3B</td>
+                <td style="padding: 16px; text-align: right;">$268.4B</td>
+                <td style="padding: 16px; text-align: center;">
+                  <button onclick="window.location.href='trading.html'" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Trade</button>
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <td style="padding: 16px;">3</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: #F3BA2F; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000;">B</div>
+                    <div>
+                      <div style="font-weight: 600;">Binance Coin</div>
+                      <div style="color: #94A3B8; font-size: 0.85rem;">BNB</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 16px; text-align: right; font-weight: 600;">$312.45</td>
+                <td style="padding: 16px; text-align: right; color: #ef4444; font-weight: 600;">-1.23%</td>
+                <td style="padding: 16px; text-align: right;">$890M</td>
+                <td style="padding: 16px; text-align: right;">$48.2B</td>
+                <td style="padding: 16px; text-align: center;">
+                  <button onclick="window.location.href='trading.html'" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Trade</button>
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <td style="padding: 16px;">4</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: #26A17B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">₮</div>
+                    <div>
+                      <div style="font-weight: 600;">Tether</div>
+                      <div style="color: #94A3B8; font-size: 0.85rem;">USDT</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 16px; text-align: right; font-weight: 600;">$1.00</td>
+                <td style="padding: 16px; text-align: right; color: #10b981; font-weight: 600;">+0.01%</td>
+                <td style="padding: 16px; text-align: right;">$38.2B</td>
+                <td style="padding: 16px; text-align: right;">$95.7B</td>
+                <td style="padding: 16px; text-align: center;">
+                  <button onclick="window.location.href='trading.html'" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Trade</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 16px;">5</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: #8247E5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">◎</div>
+                    <div>
+                      <div style="font-weight: 600;">Solana</div>
+                      <div style="color: #94A3B8; font-size: 0.85rem;">SOL</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 16px; text-align: right; font-weight: 600;">$98.34</td>
+                <td style="padding: 16px; text-align: right; color: #10b981; font-weight: 600;">+5.67%</td>
+                <td style="padding: 16px; text-align: right;">$2.1B</td>
+                <td style="padding: 16px; text-align: right;">$42.3B</td>
+                <td style="padding: 16px; text-align: center;">
+                  <button onclick="window.location.href='trading.html'" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Trade</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

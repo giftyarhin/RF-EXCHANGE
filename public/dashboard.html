@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard - RFEX</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <meta name="description" content="RFEX Trading Dashboard">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="header-inner">
+      <a class="brand" href="dashboard.html">RFEX</a>
+      <button class="nav-toggle" onclick="toggleDashboardNav()" aria-label="Toggle navigation">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <nav class="main-nav">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="markets.html">Markets</a>
+        <a href="trading.html">Trade</a>
+        <a href="wallets.html">Wallets</a>
+        <a href="p2p.html">P2P</a>
+        <a href="gift-cards.html">Gift Cards</a>
+      </nav>
+      <div class="header-actions">
+        <button class="notification-btn" onclick="toggleNotifications()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+        <div class="user-menu">
+          <button class="user-btn" onclick="toggleUserMenu()">
+            <div class="user-avatar">JD</div>
+            <span>John Doe</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="container">
+      <div class="page-header">
+        <h1>Welcome back, John! 👋</h1>
+        <p class="page-subtitle">Here's what's happening with your account today</p>
+      </div>
+
+      <!-- Portfolio Overview -->
+      <div class="portfolio-section">
+        <div class="portfolio-card main-balance">
+          <div class="card-header">
+            <h3>Total Portfolio Value</h3>
+            <button class="refresh-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="balance-amount">$45,234.50</div>
+          <div class="balance-change positive">+$2,456.00 (+5.74%)</div>
+          <div class="balance-chart">
+            <canvas id="portfolioChart" height="80"></canvas>
+          </div>
+        </div>
+
+        <div class="portfolio-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <div class="card-label">Available Balance</div>
+          <div class="card-value">$12,456.78</div>
+          <a href="wallets.html" class="card-link">View Wallets →</a>
+        </div>
+
+        <div class="portfolio-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="card-label">Today's P&L</div>
+          <div class="card-value positive">+$1,234.56</div>
+          <div class="card-percentage positive">+2.81%</div>
+        </div>
+
+        <div class="portfolio-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <div class="card-label">Open Positions</div>
+          <div class="card-value">8</div>
+          <a href="trading.html" class="card-link">Manage Trades →</a>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="dashboard-grid">
+        <!-- Quick Actions -->
+        <div class="dashboard-widget quick-actions-widget">
+          <h3>Quick Actions</h3>
+          <div class="actions-grid">
+            <a href="wallets.html?action=deposit" class="action-btn">
+              <div class="action-icon deposit">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+              </div>
+              <span>Deposit</span>
+            </a>
+            <a href="wallets.html?action=withdraw" class="action-btn">
+              <div class="action-icon withdraw">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              </div>
+              <span>Withdraw</span>
+            </a>
+            <a href="trading.html" class="action-btn">
+              <div class="action-icon trade">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+              </div>
+              <span>Trade</span>
+            </a>
+            <a href="p2p.html" class="action-btn">
+              <div class="action-icon p2p">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <span>P2P</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="dashboard-widget transactions-widget">
+          <div class="widget-header">
+            <h3>Recent Transactions</h3>
+            <a href="transactions.html" class="link">View All →</a>
+          </div>
+          <div class="transactions-list">
+            <div class="transaction-item">
+              <div class="transaction-icon deposit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+              </div>
+              <div class="transaction-info">
+                <div class="transaction-title">Bank Deposit</div>
+                <div class="transaction-time">2 hours ago</div>
+              </div>
+              <div class="transaction-amount positive">+$5,000.00</div>
+            </div>
+            <div class="transaction-item">
+              <div class="transaction-icon trade">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="17 1 21 5 17 9"></polyline>
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                </svg>
+              </div>
+              <div class="transaction-info">
+                <div class="transaction-title">Buy BTC</div>
+                <div class="transaction-time">5 hours ago</div>
+              </div>
+              <div class="transaction-amount">0.05234 BTC</div>
+            </div>
+            <div class="transaction-item">
+              <div class="transaction-icon withdraw">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              </div>
+              <div class="transaction-info">
+                <div class="transaction-title">ETH Withdrawal</div>
+                <div class="transaction-time">1 day ago</div>
+              </div>
+              <div class="transaction-amount negative">-2.5 ETH</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Market Overview -->
+        <div class="dashboard-widget market-widget">
+          <div class="widget-header">
+            <h3>Top Movers</h3>
+            <a href="markets.html" class="link">All Markets →</a>
+          </div>
+          <div class="market-list">
+            <div class="market-item">
+              <div class="market-info">
+                <div class="market-name">BTC/USDT</div>
+                <div class="market-volume">Vol: $2.5B</div>
+              </div>
+              <div class="market-price">
+                <div class="price">$94,250.50</div>
+                <div class="change positive">+5.24%</div>
+              </div>
+            </div>
+            <div class="market-item">
+              <div class="market-info">
+                <div class="market-name">ETH/USDT</div>
+                <div class="market-volume">Vol: $1.2B</div>
+              </div>
+              <div class="market-price">
+                <div class="price">$2,845.30</div>
+                <div class="change positive">+3.15%</div>
+              </div>
+            </div>
+            <div class="market-item">
+              <div class="market-info">
+                <div class="market-name">SOL/USDT</div>
+                <div class="market-volume">Vol: $450M</div>
+              </div>
+              <div class="market-price">
+                <div class="price">$165.80</div>
+                <div class="change negative">-1.24%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

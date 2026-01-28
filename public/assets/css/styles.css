@@ -322,12 +322,61 @@ footer.site-footer{
 
 @media (max-width:900px){
   .hero-grid{grid-template-columns:1fr}
-  .hero h1{font-size:2rem}
-  .nav{display:none;flex-direction:column;position:absolute;top:60px;right:20px;background:rgba(5,10,20,0.95);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)}
+  .hero h1{font-size:1.8rem}
+  .hero-card{max-width:100%}
+  .container{padding:16px}
+  .nav{
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:60px;
+    right:20px;
+    background:rgba(5,10,20,0.98);
+    padding:16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter:blur(20px);
+    box-shadow:0 8px 30px rgba(0,0,0,0.5);
+    width:250px;
+  }
+  .nav.active{display:flex}
+  .nav a{width:100%;text-align:left}
   .nav-toggle{display:inline-block}
   .two-col{grid-template-columns:1fr}
-  .section{padding:50px 0}
+  .section{padding:40px 0}
   .grid{grid-template-columns:1fr}
+  .hero-ctas{flex-direction:column}
+  .hero-ctas .btn{width:100%;text-align:center}
+}
+
+@media (max-width:640px){
+  .hero h1{font-size:1.5rem}
+  .lead{font-size:1rem}
+  .badges{flex-direction:column;gap:8px}
+  .container{padding:12px}
+  .stat-box{padding:16px}
+  .stat-box h3{font-size:1.5rem}
+  .stat-box p{font-size:0.85rem}
+  .feature-card{padding:16px}
+  .wallet-overview{grid-template-columns:1fr}
+  .total-balance-card h2{font-size:1.8rem}
+  .chart-container{height:250px}
+  .market-card{padding:12px}
+  .btn{padding:10px 18px;font-size:0.9rem}
+  .p2p-tab{padding:10px 16px;font-size:0.9rem}
+  .offer-card{padding:12px}
+  .actions-grid{grid-template-columns:1fr}
+  .payment-methods-grid{grid-template-columns:1fr}
+  .converter-box{padding:16px}
+  input,select,textarea{font-size:16px}
+  .order-book-item{font-size:0.85rem;padding:6px 8px}
+  .market-list{max-height:300px}
+  .trade-panel{padding:16px}
+  .referral-stats{grid-template-columns:1fr}
+  .tier-grid{grid-template-columns:1fr}
+  .gift-cards-grid{grid-template-columns:1fr}
+  table{font-size:0.85rem}
+  td,th{padding:8px 6px}
 }
 
 /* Smooth scroll */
@@ -1746,6 +1795,18 @@ a{position:relative}
   
   .form-row{
     grid-template-columns:1fr;
+  }
+  
+  .order-book{
+    max-height:300px;
+  }
+  
+  .wallet-overview{
+    grid-template-columns:1fr;
+  }
+  
+  .actions-grid{
+    grid-template-columns:repeat(2, 1fr);
   }
 }
 

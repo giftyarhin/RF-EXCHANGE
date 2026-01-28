@@ -239,12 +239,24 @@
   
   // Mobile nav toggle
   navToggle && navToggle.addEventListener('click', ()=>{
-    if(nav.style.display === 'flex'){
-      nav.style.display = '';
-    } else {
-      nav.style.display = 'flex';
+    nav.classList.toggle('active');
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (nav && !nav.contains(e.target) && !navToggle.contains(e.target)) {
+      nav.classList.remove('active');
     }
   });
+
+  // Close mobile menu when clicking a link
+  if (nav) {
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('active');
+      });
+    });
+  }
 
   // Smooth scroll for nav links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
