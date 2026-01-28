@@ -424,30 +424,87 @@
           <div class="region-currency">ZAR • EFT</div>
   
   <script>
+    // Initial prices and tracking
+    const cryptoPrices = {
+      btc: { price: 45230, change: 2.5, base: 45230 },
+      eth: { price: 2890, change: 1.8, base: 2890 },
+      usdt: { price: 1.00, change: 0.0, base: 1.00 },
+      bnb: { price: 320, change: -0.5, base: 320 }
+    };
+    
     // Simulate live price updates
     function updatePrices() {
       const coins = ['btc', 'eth', 'usdt', 'bnb'];
+      
       coins.forEach(coin => {
         const priceElement = document.getElementById(`${coin}-price`);
+        const changeElement = priceElement?.parentElement.querySelector('.ticker-change');
+        
         if (priceElement) {
+          // Generate realistic price fluctuation (±0.5% max per update)
+          const data = cryptoPrices[coin];
+          const fluctuation = (Math.random() - 0.5) * 0.01; // ±0.5%
+          
+          // Update price
+          data.price = data.price * (1 + fluctuation);
+          
+          // Calculate change from base
+          data.change = ((data.price - data.base) / data.base) * 100;
+          
+          // Format price based on coin
+          let formattedPrice;
+          if (coin === 'usdt') {
+            formattedPrice = '$' + data.price.toFixed(4);
+          } else if (coin === 'btc') {
+            formattedPrice = '$' + Math.round(data.price).toLocaleString();
+          } else if (coin === 'eth') {
+            formattedPrice = '$' + Math.round(data.price).toLocaleString();
+          } else {
+            formattedPrice = '$' + Math.round(data.price);
+          }
+          
+          // Animate price change
           priceElement.classList.add('updating');
+          
+          // Update the values
           setTimeout(() => {
+            priceElement.textContent = formattedPrice;
+            
+            // Update change percentage and color
+            if (changeElement) {
+              const changeText = (data.change >= 0 ? '+' : '') + data.change.toFixed(2) + '%';
+              changeElement.textContent = changeText;
+              
+              if (data.change >= 0) {
+                changeElement.classList.remove('negative');
+                changeElement.style.background = 'rgba(16, 185, 129, 0.1)';
+                changeElement.style.color = '#10B981';
+                priceElement.style.color = '#10B981';
+              } else {
+                changeElement.classList.add('negative');
+                changeElement.style.background = 'rgba(239, 68, 68, 0.1)';
+                changeElement.style.color = '#EF4444';
+                priceElement.style.color = '#EF4444';
+              }
+            }
+            
             priceElement.classList.remove('updating');
-          }, 300);
+          }, 200);
         }
       });
     }
     
-    // Update prices every 5 seconds
-    setInterval(updatePrices, 5000);
+    // Update prices every 3 seconds for live feel
+    setInterval(updatePrices, 3000);
     
     // Show crypto details
     function showCryptoDetails(crypto) {
+      const data = cryptoPrices[crypto.toLowerCase()];
       const messages = {
-        'BTC': 'Bitcoin (BTC) - The world\'s first cryptocurrency. Trade BTC with low fees on RFEX!',
-        'ETH': 'Ethereum (ETH) - Smart contract platform powering DeFi. Available for spot & futures trading!',
-        'USDT': 'Tether (USDT) - Stable coin pegged to USD. Perfect for storing value and quick trades!',
-        'BNB': 'Binance Coin (BNB) - Exchange token with utility across multiple chains!'
+        'BTC': `Bitcoin (BTC)\nCurrent Price: $${Math.round(data.price).toLocaleString()}\n24h Change: ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)}%\n\nThe world's first cryptocurrency. Trade BTC with low fees on RFEX!`,
+        'ETH': `Ethereum (ETH)\nCurrent Price: $${Math.round(data.price).toLocaleString()}\n24h Change: ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)}%\n\nSmart contract platform powering DeFi. Available for spot & futures trading!`,
+        'USDT': `Tether (USDT)\nCurrent Price: $${data.price.toFixed(4)}\n24h Change: ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)}%\n\nStable coin pegged to USD. Perfect for storing value and quick trades!`,
+        'BNB': `Binance Coin (BNB)\nCurrent Price: $${Math.round(data.price)}\n24h Change: ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)}%\n\nExchange token with utility across multiple chains!`
       };
       
       if (confirm(messages[crypto] + '\n\nWant to create an account and start trading?')) {
