@@ -8,47 +8,184 @@
   <link rel="stylesheet" href="assets/css/responsive.css">
   <meta name="description" content="RFEX — a Binance/Bybit-inspired crypto exchange with African payments, KYC, spot & futures trading, and gift card marketplace.">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    body::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 183, 3, 0.1), transparent);
+      border-radius: 50%;
+      top: -100px;
+      right: -100px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+    
+    body::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.08), transparent);
+      border-radius: 50%;
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    .landing-container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 600px;
+      padding: 40px 20px;
+    }
+    
+    .logo {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFB703, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+    }
+    
+    .tagline {
+      font-size: 1.5rem;
+      color: #F1F5F9;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    
+    .description {
+      font-size: 1.1rem;
+      color: #94A3B8;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn-landing {
+      padding: 16px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      min-width: 180px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #FFB703, #F59E0B);
+      color: #0F172A;
+      box-shadow: 0 4px 20px rgba(255, 183, 3, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(255, 183, 3, 0.4);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #F1F5F9;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 183, 3, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .features-badge {
+      display: inline-flex;
+      gap: 12px;
+      margin-top: 30px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .features-badge span {
+      color: #94A3B8;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 640px) {
+      .logo {
+        font-size: 3rem;
+      }
+      
+      .tagline {
+        font-size: 1.2rem;
+      }
+      
+      .description {
+        font-size: 1rem;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+      }
+      
+      .btn-landing {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="#">RFEX</a>
-      <nav class="nav" id="nav">
-        <a href="markets.html">Markets</a>
-        <a href="trading.html">Trading</a>
-        <a href="wallets.html">Wallets</a>
-        <a href="p2p.html">P2P</a>
-        <a href="gift-cards.html">Gift Cards</a>
-        <a href="login.html" class="cta">Login</a>
-        <a href="register.html" class="cta" style="background:linear-gradient(135deg,#FFB703,#F59E0B)">Sign Up</a>
-      </nav>
-      <button id="navToggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+  <div class="landing-container">
+    <div class="logo">RFEX</div>
+    <h1 class="tagline">Built for Africa, Powered for the World</h1>
+    <p class="description">
+      A secure, fast, and local-payment friendly crypto exchange — spot & futures trading, mobile money, and gift card marketplace.
+    </p>
+    
+    <div class="cta-buttons">
+      <a href="register.html" class="btn-landing btn-primary">Create Account</a>
+      <a href="login.html" class="btn-landing btn-secondary">Login</a>
     </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <h1>RFEX — Built for Africa, Powered for the World</h1>
-          <p class="lead">A secure, fast, and local-payment friendly crypto exchange inspired by top platforms — spot & futures, KYC, mobile money, and gift card marketplace.</p>
-          <div class="hero-ctas">
-            <a class="btn btn-primary" href="register.html">Create Account</a>
-            <a class="btn btn-ghost" href="login.html">Login</a>
-          </div>
-          <div class="badges">
-            <span>GHS • USD • EUR • NGN</span>
-            <span>MTN • Vodafone • AirtelTigo</span>
-          </div>
-        </div>
-        <div class="hero-card">
-          <div class="ticker">
-            <div class="pair">BTC/USDT <strong>35,420</strong></div>
-            <div class="pair">ETH/USDT <strong>2,600</strong></div>
-            <div class="pair">USDT/NGN <strong>1,200</strong></div>
-          </div>
-          <div class="mini-trade">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    
+    <div class="features-badge">
+      <span>🌍 GHS • NGN • USD • EUR</span>
+      <span>•</span>
+      <span>📱 MTN • Vodafone • AirtelTigo</span>
+    </div>
+  </div>
+</body>
+</html>
               <h3 style="margin:0;font-size:1.1rem;color:var(--accent)">⚡ Quick Converter</h3>
               <div id="liveRateIndicator" style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--muted)">
                 <span style="width:6px;height:6px;background:#10b981;border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
