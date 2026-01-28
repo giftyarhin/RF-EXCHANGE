@@ -220,6 +220,110 @@
       color: #10B981;
     }
     
+    .regions-section {
+      margin-top: 35px;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .regions-title {
+      font-size: 0.85rem;
+      color: #94A3B8;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .regions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    
+    .region-card {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .region-card:hover {
+      background: rgba(255, 183, 3, 0.1);
+      border-color: #FFB703;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(255, 183, 3, 0.2);
+    }
+    
+    .region-card.active {
+      background: rgba(255, 183, 3, 0.15);
+      border-color: #FFB703;
+    }
+    
+    .region-flag {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    
+    .region-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #F1F5F9;
+      margin-bottom: 4px;
+    }
+    
+    .region-currency {
+      font-size: 0.75rem;
+      color: #94A3B8;
+    }
+    
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+    
+    .ticker-item:hover {
+      background: rgba(255, 183, 3, 0.1);
+    }
+    
+    .ticker-coin {
+      font-weight: 600;
+      color: #F1F5F9;
+    }
+    
+    .ticker-price {
+      color: #10B981;
+      transition: all 0.3s;
+    }
+    
+    .ticker-price.updating {
+      color: #FFB703;
+      transform: scale(1.1);
+    }
+    
+    .ticker-change {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+    }
+    
+    .ticker-change.negative {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+    
     @media (max-width: 640px) {
       .logo {
         font-size: 3rem;
@@ -271,23 +375,130 @@
     </div>
     
     <div class="currencies-ticker">
-      <div class="ticker-title">Live Prices</div>
+      <div class="ticker-title">Live Prices - Click to view details</div>
       <div class="ticker-items">
-        <div class="ticker-item">
+        <div class="ticker-item" onclick="showCryptoDetails('BTC')">
           <span class="ticker-coin">BTC</span>
-          <span class="ticker-price">$45,230</span>
+          <span class="ticker-price" id="btc-price">$45,230</span>
+          <span class="ticker-change">+2.5%</span>
         </div>
-        <div class="ticker-item">
+        <div class="ticker-item" onclick="showCryptoDetails('ETH')">
           <span class="ticker-coin">ETH</span>
-          <span class="ticker-price">$2,890</span>
+          <span class="ticker-price" id="eth-price">$2,890</span>
+          <span class="ticker-change">+1.8%</span>
         </div>
-        <div class="ticker-item">
+        <div class="ticker-item" onclick="showCryptoDetails('USDT')">
           <span class="ticker-coin">USDT</span>
-          <span class="ticker-price">$1.00</span>
+          <span class="ticker-price" id="usdt-price">$1.00</span>
+          <span class="ticker-change">+0.0%</span>
         </div>
-        <div class="ticker-item">
+        <div class="ticker-item" onclick="showCryptoDetails('BNB')">
           <span class="ticker-coin">BNB</span>
-          <span class="ticker-price">$320</span>
+          <span class="ticker-price" id="bnb-price">$320</span>
+          <span class="ticker-change negative">-0.5%</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="regions-section">
+      <div class="regions-title">Select Your Region - We Support African & Global Markets</div>
+      <div class="regions-grid">
+        <div class="region-card active" onclick="selectRegion('ghana', this)">
+          <div class="region-flag">🇬🇭</div>
+          <div class="region-name">Ghana</div>
+          <div class="region-currency">GHS • Mobile Money</div>
+        </div>
+        <div class="region-card" onclick="selectRegion('nigeria', this)">
+          <div class="region-flag">🇳🇬</div>
+          <div class="region-name">Nigeria</div>
+          <div class="region-currency">NGN • Bank Transfer</div>
+        </div>
+        <div class="region-card" onclick="selectRegion('kenya', this)">
+          <div class="region-flag">🇰🇪</div>
+          <div class="region-name">Kenya</div>
+          <div class="region-currency">KES • M-Pesa</div>
+        </div>
+        <div class="region-card" onclick="selectRegion('south-africa', this)">
+          <div class="region-flag">🇿🇦</div>
+          <div class="region-name">South Africa</div>
+          <div class="region-currency">ZAR • EFT</div>
+  
+  <script>
+    // Simulate live price updates
+    function updatePrices() {
+      const coins = ['btc', 'eth', 'usdt', 'bnb'];
+      coins.forEach(coin => {
+        const priceElement = document.getElementById(`${coin}-price`);
+        if (priceElement) {
+          priceElement.classList.add('updating');
+          setTimeout(() => {
+            priceElement.classList.remove('updating');
+          }, 300);
+        }
+      });
+    }
+    
+    // Update prices every 5 seconds
+    setInterval(updatePrices, 5000);
+    
+    // Show crypto details
+    function showCryptoDetails(crypto) {
+      const messages = {
+        'BTC': 'Bitcoin (BTC) - The world\'s first cryptocurrency. Trade BTC with low fees on RFEX!',
+        'ETH': 'Ethereum (ETH) - Smart contract platform powering DeFi. Available for spot & futures trading!',
+        'USDT': 'Tether (USDT) - Stable coin pegged to USD. Perfect for storing value and quick trades!',
+        'BNB': 'Binance Coin (BNB) - Exchange token with utility across multiple chains!'
+      };
+      
+      if (confirm(messages[crypto] + '\n\nWant to create an account and start trading?')) {
+        window.location.href = 'register.html';
+      }
+    }
+    
+    // Select region
+    let selectedRegion = 'ghana';
+    
+    function selectRegion(region, element) {
+      // Remove active class from all cards
+      document.querySelectorAll('.region-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      
+      // Add active class to selected card
+      element.classList.add('active');
+      selectedRegion = region;
+      
+      // Update features badge based on region
+      const regionData = {
+        'ghana': { currency: 'GHS', payment: 'MTN • Vodafone • AirtelTigo' },
+        'nigeria': { currency: 'NGN', payment: 'GTBank • Zenith • Access' },
+        'kenya': { currency: 'KES', payment: 'M-Pesa • Safaricom' },
+        'south-africa': { currency: 'ZAR', payment: 'FNB • Standard Bank' },
+        'usa': { currency: 'USD', payment: 'Card • ACH • Wire' },
+        'uk': { currency: 'GBP', payment: 'Faster Payments • SEPA' }
+      };
+      
+      const data = regionData[region];
+      const badge = document.querySelector('.features-badge');
+      if (badge && data) {
+        badge.innerHTML = `
+          <span>🌍 ${data.currency} • USD • EUR</span>
+          <span>•</span>
+          <span>📱 ${data.payment}</span>
+        `;
+      }
+    }
+  </script>
+        </div>
+        <div class="region-card" onclick="selectRegion('usa', this)">
+          <div class="region-flag">🇺🇸</div>
+          <div class="region-name">USA</div>
+          <div class="region-currency">USD • Card/ACH</div>
+        </div>
+        <div class="region-card" onclick="selectRegion('uk', this)">
+          <div class="region-flag">🇬🇧</div>
+          <div class="region-name">UK</div>
+          <div class="region-currency">GBP • Bank Transfer</div>
         </div>
       </div>
     </div>
