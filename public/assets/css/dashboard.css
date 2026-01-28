@@ -181,6 +181,11 @@
   margin-bottom: 32px;
 }
 
+.portfolio-section.gift-card-stats {
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 32px;
+}
+
 .portfolio-card {
   background: rgba(30, 41, 59, 0.6);
   backdrop-filter: blur(20px);
@@ -193,6 +198,14 @@
 .portfolio-card:hover {
   border-color: rgba(255, 183, 3, 0.3);
   box-shadow: 0 8px 30px rgba(255, 183, 3, 0.1);
+}
+
+.gift-card {
+  transition: border-color 0.3s ease;
+}
+
+.gift-card:hover {
+  border-color: rgba(255, 183, 3, 0.5) !important;
 }
 
 .portfolio-card.main-balance {

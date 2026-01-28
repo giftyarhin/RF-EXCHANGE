@@ -142,11 +142,17 @@
 - Payment method selection (Naira, Cedis, BTC, LTC, USDT, ETH, Wallet)
 - Rate display (75%-90% depending on card)
 - **Fraud Prevention:**
-  - AI-based image verification for physical cards
-  - Duplicate card detection (hash-based fingerprinting)
-  - Velocity checks (max 3 cards per user per day)
-  - Blacklist checking against known fraudulent card patterns
-  - IP & device fingerprinting
+  - **Implementation Details:**
+    - AI-based image verification using AWS Rekognition for physical card validation
+    - Duplicate card detection via perceptual hashing (pHash algorithm) and SHA-256 fingerprinting
+    - Velocity checks: max 3 cards per user per 24-hour period, max $500 total value per week
+    - Blacklist checking: real-time lookup against industry-shared fraud database
+    - Behavioral analysis: flag unusual patterns (e.g., rapid account creation + card submission)
+  - **Privacy Safeguards:**
+    - Device fingerprinting anonymized and hashed (not stored in plaintext)
+    - IP data retained for 90 days only (GDPR compliance)
+    - User consent required for enhanced fraud checks
+    - Right to challenge automated fraud decisions per GDPR Article 22
 - Admin verification (24-48 hours)
 - Transaction tracking
 
@@ -189,18 +195,33 @@
 - Fraud detection & prevention
 
 ### 11. **Compliance & Regulatory**
+
+**COMPLIANCE DISCLAIMER:** RFEX is actively pursuing financial licensing and regulatory compliance. Current operations are conducted under applicable money services business (MSB) and virtual asset service provider (VASP) frameworks. Users should consult local regulations before trading.
+
 - **KYC/AML Compliance:**
   - Tiered verification levels (Basic, Intermediate, Advanced)
   - Enhanced due diligence for high-risk jurisdictions
   - Ongoing transaction monitoring and suspicious activity reporting
+  
 - **Regulatory Requirements:**
-  - GDPR compliance for EU users
-  - Data residency requirements per jurisdiction
-  - Financial licensing coordination (working toward FinCEN, FCA, SEC registration)
+  - **Data Protection:** GDPR compliance for EU users, CCPA for California residents
+  - **Data Residency:** Jurisdiction-specific data storage requirements
+  - **Financial Licensing:** Working toward FinCEN (USA), FCA (UK), SEC registration
+  - **Sanctions Compliance:** OFAC screening for all users and transactions
+  
 - **Tax Compliance:**
-  - Transaction reporting for tax purposes
-  - 1099 forms for US users (when applicable)
-  - Export transaction history for tax filing
+  - **US Users:**
+    - EIN/SSN collection via W-9 form for applicable accounts
+    - Automatic 1099-MISC generation for earnings ≥$600/year (referrals, staking rewards)
+    - Form 1099-B for capital gains reporting (when trading volume exceeds IRS thresholds)
+    - Backup withholding (24%) if W-9 not provided
+  - **Transaction Reporting:**
+    - Export detailed transaction history (CSV, PDF) for tax filing
+    - Gain/loss calculation reports with cost basis tracking
+    - Integration with tax software APIs (CoinTracker, Koinly) [Phase 3]
+  - **International Compliance:**
+    - CRS (Common Reporting Standard) reporting for eligible jurisdictions
+    - Local tax documentation support per country regulations
 - **Audit Trail:**
   - Immutable audit logs for all financial transactions
   - Compliance reports generation (monthly/quarterly)
@@ -308,10 +329,18 @@
 
 #### **APIs & Services**
 - **CoinGecko API** - Live crypto prices (free tier, rate limit: 50 calls/min)
-  - Fallback: CoinMarketCap API (100 calls/day free tier)
-  - Caching: 10-second cache for price data
+  - **Tiered Caching Strategy:**
+    - L1 (Redis): 5-second cache for high-frequency pairs (BTC/USDT, ETH/USDT)
+    - L2 (Redis): 30-second cache for standard pairs
+    - L3 (In-memory): 2-minute cache for low-volume pairs
+    - Stale-while-revalidate: Serve stale data up to 60s if API unavailable
+  - **Multi-Tier Fallback Strategy:**
+    - Primary: CoinGecko API
+    - Secondary: CoinMarketCap API (100 calls/day free tier)
+    - Tertiary: Binance public API (last known prices)
+    - Emergency: Last cached value with staleness warning to user
 - **ExchangeRate-API** - Fiat currency rates (1500 requests/month free)
-  - Fallback: Open Exchange Rates API
+  - Fallback: Open Exchange Rates API, then ECB (European Central Bank) rates
 - **Binance API** - Trading data & liquidity (rate limit: 1200 requests/min)
   - Redundancy: Kraken API, Coinbase Pro API
 - **Paystack API** - Payment processing (Ghana, Nigeria, South Africa)
@@ -348,16 +377,27 @@
 - P2P chat messages
 - Wallet balance updates
 - **Security Controls:**
-  - JWT-based authentication for WebSocket connections
-  - Rate limiting: max 100 messages/second per connection
-  - Origin validation (CORS for WebSocket)
-  - Heartbeat/ping-pong mechanism (30s timeout)
-  - Automatic reconnection with exponential backoff
+  - JWT-based authentication for WebSocket connections (token refresh every 15 minutes)
+  - **Tiered Rate Limiting:**
+    - Public data (price updates): max 50 messages/second per connection
+    - User-specific data (balance updates, orders): max 20 messages/second
+    - Admin actions: max 5 messages/second
+    - Burst allowance: +10 messages for 3-second window
+  - **Origin Validation:**
+    - Whitelist: `wss://api.rfex.app`, `wss://api-staging.rfex.app`
+    - Reject connections from unauthorized origins (log attempt)
+    - Validate Sec-WebSocket-Protocol header
+  - Heartbeat/ping-pong mechanism (30s timeout, 3 missed pings = disconnect)
+  - Automatic reconnection with exponential backoff (initial: 1s, max: 30s)
+  - Connection limits: max 5 concurrent WebSocket connections per user
 - **Scalability:**
   - Redis pub/sub for horizontal scaling across multiple servers
-  - Socket.io with sticky sessions (nginx load balancer)
+  - Socket.io with sticky sessions (nginx load balancer, ip_hash)
   - Room-based subscriptions (per user, per market pair)
-  - Message queue buffering (max 1000 messages per client)
+  - **Message Queue Buffering:**
+    - Per-client buffer: max 100 messages (reduced from 1000 for memory efficiency)
+    - Buffer eviction policy: FIFO (oldest messages dropped first)
+    - Overflow handling: Send "message_overflow" event to client
 
 #### **Deep Linking**
 - **Universal Links (iOS) / App Links (Android)**
@@ -368,16 +408,29 @@
   - `/wallet/:currency` - Open wallet details
   - `/p2p/offer/:id` - Open P2P offer
   - `/referral/:code` - Apply referral code
-  - `/verify-email/:token` - Email verification
-  - `/reset-password/:token` - Password reset
+  - `/verify-email?code=xxxxx` - Email verification (6-digit code, 15-min expiry)
+  - `/reset-password` - Password reset (opens form, requires code + email verification)
 - **QR Code Support:** Generate QR codes for referral links, wallet addresses
 
 #### **Offline Mode**
 - **Offline Capabilities:**
-  - View wallet balances (last synced data)
-  - Browse transaction history (cached)
-  - View market prices (stale data with warning)
-  - Access profile and settings
+  - **Read-Only Actions (Allowed):**
+    - View wallet balances (last synced data with timestamp)
+    - Browse transaction history (cached, marked as "offline")
+    - View market prices (stale data with red warning banner)
+    - Access profile and settings (read-only)
+    - View open orders (cached state, no cancellation)
+  - **Blocked Actions (Show "Requires Connection" Error):**
+    - Place new trades (spot, futures)
+    - Initiate withdrawals or deposits
+    - Cancel orders
+    - Send P2P messages
+    - Upload KYC documents
+  - **Queued Actions (Sync When Online):**
+    - Update profile preferences (name, avatar)
+    - Mark notifications as read
+    - Add/remove watchlist items
+    - Enable/disable price alerts
 - **Data Persistence:**
   - AsyncStorage for user preferences
   - Redux Persist for state persistence
@@ -532,9 +585,17 @@ const lightColors = {
 ```
 
 **WCAG Compliance Notes:**
-- All color combinations meet WCAG 2.1 Level AA standards (minimum 4.5:1 for normal text, 3:1 for large text)
-- Interactive elements meet 3:1 contrast ratio for UI components
-- Theme toggle available in app settings
+- **Text Contrast Ratios (WCAG 2.1 Level AA):**
+  - Normal text (16px): Minimum 4.5:1 ✓ (textPrimary: 15.52:1, textSecondary: 5.89:1, textMuted: 4.51:1)
+  - Large text (18px+ or 14px+ bold): Minimum 3:1 ✓ (success: 3.12:1, danger: 3.93:1)
+  - UI components & interactive elements: Minimum 3:1 ✓
+- **Usage Restrictions:**
+  - ⚠️ `primary` (#FFB703) has 1.77:1 contrast - **DO NOT use for body text**. Only for large headings (24px+), icons, and decorative elements
+  - Use `accent` (#06B6D4, 4.74:1) or `successLight` (#34D399, 4.53:1) for smaller interactive elements
+- **Additional Compliance:**
+  - Focus indicators: 3px solid outline with 3:1 contrast
+  - Touch targets: Minimum 44x44 dp (iOS) / 48x48 dp (Android)
+  - Theme toggle available in app settings for user preference
 
 ### **Typography**
 ```javascript
@@ -603,9 +664,28 @@ CREATE TABLE wallets (
   updated_at TIMESTAMP DEFAULT NOW(),
   UNIQUE(user_id, currency),
   CHECK (balance >= 0),
-  CHECK (locked_balance >= 0),
-  CHECK (balance + locked_balance >= 0)
+  CHECK (locked_balance >= 0)
+  -- Note: balance + locked_balance check removed (always true if both >= 0)
 );
+
+-- Optimistic locking: Auto-increment version on every update
+CREATE OR REPLACE FUNCTION increment_wallet_version()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.version = OLD.version + 1;
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER wallet_version_trigger
+  BEFORE UPDATE ON wallets
+  FOR EACH ROW
+  EXECUTE FUNCTION increment_wallet_version();
+
+-- Application-level usage:
+-- UPDATE wallets SET balance = balance + 100 WHERE id = ? AND version = ?
+-- If affected_rows = 0, retry transaction (version mismatch = concurrent update)
 ```
 
 ### **Ledger Entries Table (Double-Entry Accounting)**
@@ -632,8 +712,37 @@ CREATE INDEX idx_ledger_entries_transaction_id ON ledger_entries(transaction_id)
 CREATE INDEX idx_ledger_entries_user_id ON ledger_entries(user_id);
 CREATE INDEX idx_ledger_entries_wallet_id ON ledger_entries(wallet_id);
 
--- Constraint: every transaction_id must have balanced debits and credits
--- This is enforced at application level with a CHECK before commit
+-- Database-level enforcement: every transaction_id must have balanced debits and credits
+-- Using deferred constraint to allow all entries to be inserted before validation
+CREATE CONSTRAINT TRIGGER check_balanced_ledger
+  AFTER INSERT ON ledger_entries
+  DEFERRABLE INITIALLY DEFERRED
+  FOR EACH ROW
+  EXECUTE FUNCTION validate_balanced_transaction();
+
+-- Trigger function to validate double-entry balance
+CREATE OR REPLACE FUNCTION validate_balanced_transaction()
+RETURNS TRIGGER AS $$
+DECLARE
+  total_debits DECIMAL(20, 8);
+  total_credits DECIMAL(20, 8);
+BEGIN
+  SELECT COALESCE(SUM(amount), 0) INTO total_debits
+  FROM ledger_entries
+  WHERE transaction_id = NEW.transaction_id AND entry_type = 'debit';
+  
+  SELECT COALESCE(SUM(amount), 0) INTO total_credits
+  FROM ledger_entries
+  WHERE transaction_id = NEW.transaction_id AND entry_type = 'credit';
+  
+  IF total_debits != total_credits THEN
+    RAISE EXCEPTION 'Transaction % has unbalanced ledger entries: debits=%, credits=%',
+      NEW.transaction_id, total_debits, total_credits;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 ### **Transactions Table (High-level transaction records)**
 ```sql
@@ -731,22 +840,31 @@ CREATE TABLE kyc_documents (
   user_id UUID REFERENCES users(id),
   document_type document_type_enum NOT NULL,
   document_number VARCHAR(100),
-  document_front TEXT NOT NULL, -- S3 pre-signed URL (encrypted at rest with AES-256)
-  document_back TEXT, -- S3 pre-signed URL (encrypted at rest with AES-256)
-  selfie TEXT NOT NULL, -- S3 pre-signed URL (encrypted at rest with AES-256)
+  -- Store S3 object keys instead of pre-signed URLs
+  document_front_s3_key TEXT NOT NULL, -- e.g., 'kyc/user-{uuid}/passport-front.jpg'
+  document_back_s3_key TEXT, -- e.g., 'kyc/user-{uuid}/passport-back.jpg'
+  selfie_s3_key TEXT NOT NULL, -- e.g., 'kyc/user-{uuid}/selfie.jpg'
+  s3_bucket VARCHAR(100) DEFAULT 'rfex-kyc-documents', -- bucket name for flexibility
   status kyc_document_status_enum DEFAULT 'pending',
   rejection_reason TEXT,
   verified_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW(),
-  -- Security: S3 bucket encryption (SSE-S3 or SSE-KMS)
-  -- Access: Pre-signed URLs with 15-minute expiry
-  -- Retention: Auto-delete after 7 years (compliance requirement)
-  -- Deletion: Secure deletion with S3 Object Lock for compliance
-  CONSTRAINT check_document_urls CHECK (
-    document_front LIKE 'https://%.s3.%.amazonaws.com/%' OR
-    document_front LIKE 'https://s3.%.amazonaws.com/%'
+  -- Security Notes:
+  -- - S3 bucket encryption: SSE-KMS with customer-managed keys
+  -- - Access: Generate pre-signed URLs on-demand (15-minute expiry) via API
+  -- - Retention: S3 lifecycle policy auto-delete after 7 years (GDPR/compliance)
+  -- - Access Control: S3 bucket policy restricts to authorized backend services only
+  -- - Audit: CloudTrail logs all S3 access events
+  CONSTRAINT check_s3_keys CHECK (
+    document_front_s3_key ~ '^kyc/user-[a-f0-9-]{36}/' AND
+    (document_back_s3_key IS NULL OR document_back_s3_key ~ '^kyc/user-[a-f0-9-]{36}/') AND
+    selfie_s3_key ~ '^kyc/user-[a-f0-9-]{36}/'
   )
 );
+
+-- API Endpoint Usage:
+-- GET /api/v1/kyc/documents/:id/download?file=front
+-- Returns: { "url": "https://s3.amazonaws.com/...?X-Amz-Expires=900&..." }
 ```
 
 ### **Gift Cards Table**
@@ -764,20 +882,39 @@ CREATE TABLE gift_cards (
   currency VARCHAR(10) NOT NULL,
   rate DECIMAL(5, 2), -- for sell orders (80%, 85%, etc.)
   payment_method VARCHAR(50),
-  card_code TEXT, -- ENCRYPTED with AES-256-GCM
-  card_code_iv TEXT, -- Initialization vector for AES-256-GCM
-  card_code_tag TEXT, -- Authentication tag for AES-256-GCM
-  card_image TEXT, -- S3 URL (encrypted at rest)
+  -- Encrypted card code (AES-256-GCM)
+  card_code_encrypted TEXT, -- Base64-encoded ciphertext
+  card_code_iv TEXT NOT NULL, -- Initialization vector (96-bit, Base64-encoded)
+  card_code_tag TEXT NOT NULL, -- Authentication tag (128-bit, Base64-encoded)
+  encryption_key_id VARCHAR(100), -- AWS KMS Key ID or Vault key version
+  encrypted_at TIMESTAMP DEFAULT NOW(), -- Timestamp of encryption
+  -- Card image storage
+  card_image_s3_key TEXT, -- S3 object key (e.g., 'giftcards/user-{uuid}/card-{id}.jpg')
+  s3_bucket VARCHAR(100) DEFAULT 'rfex-giftcard-images',
   status gift_card_status_enum DEFAULT 'pending',
-  created_at TIMESTAMP DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT NOW(),
+  -- Prevent storage of plaintext card codes
+  CONSTRAINT no_plaintext_codes CHECK (card_code_encrypted IS NULL OR LENGTH(card_code_encrypted) > 20)
 );
 
--- Encryption Details:
+-- Encryption Implementation Details:
 -- Algorithm: AES-256-GCM (Galois/Counter Mode for authenticated encryption)
--- Key Management: AWS KMS (Key Management Service) or HashiCorp Vault
--- Key Rotation: Automatic 90-day rotation
--- Audit Logging: All encryption/decryption operations logged to audit_logs table
--- Access Control: Only authorized services can decrypt (least privilege principle)
+-- Key Management: AWS KMS (customer-managed key with automatic rotation)
+--   - Primary Key: arn:aws:kms:region:account:key/{key-id}
+--   - Key Rotation: Automatic 90-day rotation (AWS managed)
+--   - Key Policy: Restrict to backend service role only
+-- Encryption Process:
+--   1. Generate random 96-bit IV (crypto.randomBytes(12))
+--   2. Encrypt card_code with AES-256-GCM using KMS data key
+--   3. Store ciphertext, IV, and auth tag separately
+--   4. Log encryption event to audit_logs (key_id, user_id, timestamp)
+-- Decryption Access Control:
+--   - Only 'giftcard-processor' service role can decrypt
+--   - Rate limit: 100 decrypt operations/minute per user
+--   - All decrypt operations logged with IP and user_agent
+-- Data Retention:
+--   - Delete encrypted codes 30 days after 'completed' status
+--   - S3 lifecycle policy: archive images to Glacier after 90 days
 
 CREATE INDEX idx_gift_cards_user_id ON gift_cards(user_id);
 CREATE INDEX idx_gift_cards_status ON gift_cards(status);
@@ -862,10 +999,25 @@ CREATE INDEX idx_p2p_chat_messages_created_at ON p2p_chat_messages(created_at);
 - **Base URL:** `https://api.rfex.app/v1`
 - **Versioning:** URI versioning (`/v1`, `/v2`)
 - **Authentication:** Bearer token (JWT) in `Authorization` header
-- **Rate Limiting:** 
-  - Public endpoints: 100 requests/15 minutes per IP
-  - Authenticated endpoints: 1000 requests/15 minutes per user
-  - Trading endpoints: 10 requests/second per user
+- **Rate Limiting (Tiered Per-User):**
+  - **Public Endpoints (per IP):**
+    - Anonymous: 100 requests/15 minutes
+    - Burst allowance: +20 requests for first 60 seconds
+  - **Authenticated Endpoints (per user):**
+    - Basic tier (KYC pending): 500 requests/15 minutes
+    - Verified tier (KYC approved): 1000 requests/15 minutes  
+    - Premium tier (VIP users): 5000 requests/15 minutes
+  - **Trading Endpoints (per user):**
+    - Order placement: 10 requests/second (max 600/minute)
+    - Order cancellation: 20 requests/second
+    - Market data: 50 requests/second
+  - **Withdrawal Endpoints:**
+    - Crypto withdrawal: 5 requests/hour (security measure)
+    - Fiat withdrawal: 3 requests/day
+  - **Idempotency Support:**
+    - POST/PUT/DELETE requests: Accept `Idempotency-Key` header (UUID)
+    - Duplicate key within 24 hours: Return cached response (status 200, not 409)
+    - Implementation: Redis cache with 24-hour TTL
 - **Pagination:** 
   - Query params: `?page=1&limit=20` (default limit: 20, max: 100)
   - Response includes: `{ data: [], pagination: { total, page, limit, totalPages } }`
@@ -941,7 +1093,21 @@ CREATE INDEX idx_p2p_chat_messages_created_at ON p2p_chat_messages(created_at);
 - `PUT /api/v1/p2p/trades/:id/pay` - Mark as paid (requires auth)
 - `PUT /api/v1/p2p/trades/:id/release` - Release crypto (requires auth + 2FA)
 - `POST /api/v1/p2p/trades/:id/dispute` - Open dispute (requires auth)
-- ~~`POST /api/v1/p2p/trades/:id/message`~~ - **DEPRECATED: Use WebSocket for real-time chat**
+- ~~`POST /api/v1/p2p/trades/:id/message`~~ - **DEPRECATED**
+    - **Deprecation Notice:** As of February 1, 2026
+    - **Sunset Date:** May 1, 2026 (complete removal)
+    - **Migration Guide:** Use WebSocket endpoint `wss://api.rfex.app/p2p/chat` with event `send_message`
+      ```javascript
+      // Old (Deprecated)
+      POST /api/v1/p2p/trades/123/message
+      Body: { message: "Hello" }
+      
+      // New (Recommended)
+      socket.emit('send_message', { tradeId: '123', message: 'Hello' });
+      socket.on('message_sent', (data) => { /* handle response */ });
+      ```
+    - **Transition Period:** Endpoint will return `410 Gone` starting May 1, 2026
+    - **Documentation:** See [WebSocket P2P Chat Guide](https://docs.rfex.app/websocket-chat)
 - `GET /api/v1/p2p/trades/:id/messages` - Get chat history (requires auth, paginated)
 
 ### **Gift Cards** (requires auth)
@@ -1272,7 +1438,10 @@ MIT License - See LICENSE file for details
 - [ ] Set up cloud infrastructure (AWS/GCP/Azure)
 - [ ] Configure load balancer (ALB/ELB or Nginx)
 - [ ] Set up CDN (CloudFront, Cloudflare)
-- [ ] Database backups (automated daily backups, 30-day retention)
+- [ ] Database backups with two-tier policy:
+  - [ ] Hot backups: Automated daily backups, 30-day retention (RDS automated backups)
+  - [ ] Cold backups: Weekly encrypted snapshots to S3 Glacier, 7-year retention (compliance)
+  - [ ] Disaster Recovery targets: RPO ≤ 15 minutes (point-in-time recovery), RTO ≤ 4 hours
 - [ ] Set up monitoring (CloudWatch, Datadog, New Relic)
 - [ ] Configure logging (ELK stack or CloudWatch Logs)
 - [ ] Set up alerting (PagerDuty, Opsgenie)
@@ -1291,11 +1460,30 @@ MIT License - See LICENSE file for details
 - [ ] Implement encryption at rest (database, S3)
 - [ ] Implement encryption in transit (TLS 1.3)
 - [ ] Set up secrets management (AWS Secrets Manager, HashiCorp Vault)
-- [ ] Cold wallet setup for crypto storage
-- [ ] Multi-signature wallet configuration
-- [ ] Security audit by third party (e.g., Trail of Bits, OpenZeppelin)
-- [ ] Penetration testing
-- [ ] Bug bounty program setup (HackerOne, Bugcrowd)
+- [ ] Cold wallet setup for crypto storage:
+  - [ ] Hardware wallets: Ledger Nano X (primary) + Trezor Model T (backup)
+  - [ ] Storage policy: 95% of user funds in cold storage, 5% in hot wallets for liquidity
+  - [ ] Geographic distribution: 3 physical locations (US, EU, Asia) with tamper-evident seals
+  - [ ] Access control: 2-of-3 multi-signature requirement for withdrawals >$100K
+- [ ] Multi-signature wallet configuration:
+  - [ ] Bitcoin: P2WSH 2-of-3 multi-sig (SegWit native)
+  - [ ] Ethereum: Gnosis Safe 3-of-5 multi-sig contract (0x...)
+  - [ ] Signatory roles: CEO, CTO, CFO, Head of Security, External Custodian
+  - [ ] Time-locked recovery: 7-day delay for configuration changes
+- [ ] Security audit by third party:
+  - [ ] Smart contract audit: Trail of Bits or OpenZeppelin (for multi-sig contracts)
+  - [ ] Infrastructure audit: Cure53 or NCC Group (backend, database, API)
+  - [ ] Re-audit schedule: Quarterly for critical components, annually for full system
+- [ ] Penetration testing:
+  - [ ] Annual penetration test by certified firm (e.g., Offensive Security, Synack)
+  - [ ] Scope: Web app, mobile app, API, infrastructure, social engineering
+  - [ ] Remediation SLA: Critical (24h), High (7 days), Medium (30 days)
+- [ ] Bug bounty program setup:
+  - [ ] Platform: HackerOne (preferred) or Bugcrowd
+  - [ ] Rewards: $100 (Low) to $25,000 (Critical, with proof of fund loss)
+  - [ ] Scope: All production systems (exclude staging/dev environments)
+  - [ ] Out-of-scope: DoS attacks, social engineering, physical security
+  - [ ] Private program: First 6 months, then public launch
 
 ### **Testing**
 - [ ] Unit tests for utilities (Jest)

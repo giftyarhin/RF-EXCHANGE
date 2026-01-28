@@ -69,9 +69,11 @@ if (loginForm) {
     e.preventDefault();
     
     const submitBtn = this.querySelector('button[type="submit"]');
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoader = submitBtn.querySelector('.btn-loader');
+    const btnText = submitBtn?.querySelector('.btn-text');
+    const btnLoader = submitBtn?.querySelector('.btn-loader');
     const errorMessage = document.getElementById('errorMessage');
+    
+    if (!submitBtn || !btnText || !btnLoader || !errorMessage) return;
     
     // Show loader
     btnText.style.display = 'none';
@@ -187,13 +189,15 @@ if (registerForm) {
       
     } catch (error) {
       // Show error
-      errorMessage.textContent = error.message || 'Registration failed. Please try again.';
-      errorMessage.style.display = 'block';
+      if (errorMessage) {
+        errorMessage.textContent = error.message || 'Registration failed. Please try again.';
+        errorMessage.style.display = 'block';
+      }
       
       // Reset button
-      btnText.style.display = 'block';
-      btnLoader.style.display = 'none';
-      submitBtn.disabled = false;
+      if (btnText) btnText.style.display = 'block';
+      if (btnLoader) btnLoader.style.display = 'none';
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
 }
@@ -203,19 +207,8 @@ function socialLogin(provider) {
   console.log(`Logging in with ${provider}...`);
   
   // In production, implement OAuth flow
-  // For demo, show alert
-  alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login will be implemented with OAuth in production.`);
-  
-  // For demo, simulate successful login
-  // PRODUCTION: Store only session info, not PII
-  localStorage.setItem('rfex_user', JSON.stringify({
-    loggedIn: true,
-    provider: provider,
-    loginTime: new Date().toISOString()
-  }));
-  
-  // Redirect to dashboard
-  window.location.href = 'dashboard.html';
+  // For demo, show alert only - no session creation or redirect
+  alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login will be implemented with OAuth in production.\n\nThis is a demo-only feature. Use the email/password login form instead.`);
 }
 
 // Check authentication on protected pages

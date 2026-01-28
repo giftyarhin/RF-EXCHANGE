@@ -93,10 +93,10 @@ function initBinanceWebSocket() {
         if (!isReconnecting) {
             isReconnecting = true;
             setTimeout(() => {
+                isReconnecting = false;
                 if (currentSymbol) {
                     initBinanceWebSocket();
                 }
-                isReconnecting = false;
             }, 5000);
         }
     };
@@ -193,8 +193,11 @@ function selectPair(pair, targetBtn) {
     const descEl = document.getElementById('pairDescription');
     if (pairEl) pairEl.textContent = pair;
     if (descEl) {
-        const [base, quote] = pair.split('/');
-        descEl.textContent = getPairName(base) + ' / ' + getPairName(quote);
+        const parts = pair.split('/');
+        if (parts.length === 2) {
+            const [base, quote] = parts;
+            descEl.textContent = getPairName(base) + ' / ' + getPairName(quote);
+        }
     }
     
     // Update active state

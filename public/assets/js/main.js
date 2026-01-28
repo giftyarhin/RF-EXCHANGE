@@ -244,7 +244,7 @@
 
   // Close mobile menu when clicking outside
   document.addEventListener('click', (e) => {
-    if (nav && !nav.contains(e.target) && !navToggle.contains(e.target)) {
+    if (nav && navToggle && !nav.contains(e.target) && !navToggle.contains(e.target)) {
       nav.classList.remove('active');
     }
   });

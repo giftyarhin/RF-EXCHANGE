@@ -1,5 +1,12 @@
 // P2P Page Interactivity
 
+// Helper function to escape HTML attribute values
+function escapeAttr(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // Sample data for different tabs
 const buyOffers = [
   {
@@ -134,7 +141,7 @@ function renderOffers() {
     if (filters.payment !== 'all') {
       const hasPayment = offer.payments.some(p => 
         p.toLowerCase().includes(filters.payment.toLowerCase()) ||
-        filters.payment === 'mobile' && (p.includes('MoMo') || p.includes('Cash') || p.includes('Money'))
+        (filters.payment === 'mobile' && (p.includes('MoMo') || p.includes('Cash') || p.includes('Money')))
       );
       if (!hasPayment) return false;
     }
@@ -188,7 +195,7 @@ function renderOffers() {
         </div>
         
         <div>
-          <button class="trade-btn" data-trader="${offer.trader}" data-type="${currentTab}" style="padding: 12px 32px; background: linear-gradient(135deg, #FFB703, #F59E0B); border: none; border-radius: 8px; color: #0F172A; font-weight: 700; cursor: pointer; white-space: nowrap;">
+          <button class="trade-btn" data-trader="${escapeAttr(offer.trader)}" data-type="${currentTab}" style="padding: 12px 32px; background: linear-gradient(135deg, #FFB703, #F59E0B); border: none; border-radius: 8px; color: #0F172A; font-weight: 700; cursor: pointer; white-space: nowrap;">
             ${currentTab === 'buy' ? 'Buy' : 'Sell'} ${offer.crypto}
           </button>
         </div>

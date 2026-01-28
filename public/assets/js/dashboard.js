@@ -178,7 +178,7 @@ function initPortfolioChart() {
   
   // Draw gradient fill
   const lastX = padding + width;
-  const lastY = padding + height - ((data[data.length - 1] - min) / range * height);
+  const lastY = padding + height - ((data[data.length - 1] - min) / safeRange * height);
   
   ctx.lineTo(lastX, padding + height);
   ctx.lineTo(padding, padding + height);

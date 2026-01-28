@@ -60,7 +60,7 @@
             <div class="converter-group">
               <label style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;display:block">From</label>
               <div class="converter-input-wrapper">
-                <input type="number" id="convertFromAmount" placeholder="0.00" step="0.01" min="0" onkeyup="updateConversion('from')">
+                <input type="number" id="convertFromAmount" placeholder="0.00" step="0.01" min="0" oninput="updateConversion('from')">
                 <select id="convertFromCurrency" onchange="updateConversion('from')">
                   <option value="USD">USD</option>
                   <option value="EUR">EUR</option>
@@ -705,7 +705,7 @@
   </div>
 
   <!-- TradingView Chart Library -->
-  <script src="https://s3.tradingview.com/tv.js" integrity="sha384-placeholder" crossorigin="anonymous"></script>
+  <script src="https://s3.tradingview.com/tv.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

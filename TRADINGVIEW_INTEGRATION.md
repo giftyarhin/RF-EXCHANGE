@@ -8,17 +8,26 @@ Successfully integrated **TradingView Advanced Charts** API into the RFEX tradin
 ## What Was Changed
 
 ### 1. **HTML Structure** (`public/index.html`)
-- ✅ Added TradingView library script with Subresource Integrity (SRI): `https://s3.tradingview.com/tv.js`
+- ✅ Added TradingView library script: `https://s3.tradingview.com/tv.js`
+  
+  **⚠️ Subresource Integrity (SRI) Note**: TradingView's `tv.js` CDN does not support SRI because the file is frequently updated and unversioned. Using an integrity hash would break the integration when TradingView updates the file.
+  
+  **Alternative Security Approaches**:
+  1. **Current Approach (Recommended)**: Load directly from TradingView's CDN without SRI, relying on their infrastructure security
+  2. **Vendor the File**: Download and self-host a specific version of tv.js, but requires manual updates for bug fixes and features
+  3. **Runtime Fallback**: Implement error handling to load a local backup if CDN fails
+  
   ```html
-  <script src="https://s3.tradingview.com/tv.js" 
-          integrity="sha384-[HASH_TO_BE_GENERATED]" 
-          crossorigin="anonymous"></script>
+  <!-- Option 1: Direct CDN (Current - No SRI due to TradingView updates) -->
+  <script src="https://s3.tradingview.com/tv.js" defer></script>
+  
+  <!-- Option 2: Self-hosted (if vendored) -->
+  <!-- <script src="assets/js/vendor/tradingview-tv-v1.0.0.js" 
+          integrity="sha384-[YOUR_HASH]" 
+          crossorigin="anonymous"></script> -->
   ```
-  **Note**: Generate the SHA-384 hash using:
-  ```bash
-  curl -s https://s3.tradingview.com/tv.js | openssl dgst -sha384 -binary | openssl base64 -A
-  ```
-  Update the integrity attribute with the generated hash for Subresource Integrity protection.
+  
+  **Recommendation**: Continue using the CDN approach as TradingView manages security updates. Monitor for versioned releases in the future.
 - ✅ Replaced `<canvas>` element with a `<div>` container for TradingView widget
 - ✅ Chart container now has proper sizing: `width: 100%; height: 100%;`
 
