@@ -1,0 +1,119 @@
+/* Mobile & Tablet Enhancements */
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+  button, .btn, a.cta, .nav a {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+  }
+
+  /* Larger text for readability */
+  body {
+    font-size: 16px;
+  }
+
+  /* Stack hero content */
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 30px;
+  }
+
+  /* Full width cards on mobile */
+  .trading-interface {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Better spacing on small screens */
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Stack order book and trades vertically */
+  .trading-interface > div > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Improve table readability */
+  table {
+    font-size: 14px;
+  }
+
+  /* Horizontal scroll for tables */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Better form inputs */
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Sticky header on mobile */
+  .site-header, .dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  /* Hide desktop-only elements */
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Tablet specific (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .trading-interface {
+    grid-template-columns: 1fr 300px !important;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0 24px;
+  }
+}
+
+/* Small phones (< 375px) */
+@media (max-width: 375px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-ctas .btn {
+    width: 100%;
+  }
+}
+
+/* Landscape mode on phones */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    padding: 40px 0;
+  }
+
+  .dashboard-main {
+    padding-top: 20px;
+  }
+}
+
+/* PWA-friendly */
+@media (display-mode: standalone) {
+  .site-header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
