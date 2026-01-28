@@ -234,11 +234,20 @@ function getPairName(symbol) {
     return names[symbol] || symbol;
 }
 
-// Initialize on page load
+// Initialize on page load - wait for TradingView to be available
+function waitForTradingView() {
+    if (typeof TradingView !== 'undefined') {
+        initTrading();
+    } else {
+        console.log('Waiting for TradingView library...');
+        setTimeout(waitForTradingView, 100);
+    }
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTrading);
+    document.addEventListener('DOMContentLoaded', waitForTradingView);
 } else {
-    initTrading();
+    waitForTradingView();
 }
 
 // Clean up on page unload
