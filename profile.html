@@ -55,7 +55,17 @@
         <p class="page-subtitle">Manage your account information</p>
       </div>
 
-      <div class="dashboard-grid" style="grid-template-columns: 1fr 2fr;">
+      <div class="dashboard-grid profile-grid" style="grid-template-columns: 1fr 2fr;">
+      <style>
+        @media (max-width: 768px) {
+          .profile-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .profile-grid > div:first-child {
+            order: 1;
+          }
+        }
+      </style>
         <!-- Profile Sidebar -->
         <div class="dashboard-widget">
           <div style="text-align: center; padding: 20px;">

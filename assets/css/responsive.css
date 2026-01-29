@@ -129,8 +129,31 @@
   }
 
   /* Profile grid mobile */
-  .dashboard-widget:has(.user-avatar) {
-    order: -1;
+  .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Settings improvements */
+  .settings-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  /* Form inputs mobile */
+  .dashboard-widget input,
+  .dashboard-widget select {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Dashboard widget spacing */
+  .dashboard-widget {
+    padding: 20px 16px !important;
+  }
+
+  /* Hide long text on mobile */
+  .card-link {
+    font-size: 0.85rem;
   }
 }
 
