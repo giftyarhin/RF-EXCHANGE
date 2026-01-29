@@ -151,19 +151,18 @@
                     placeholder="Click 'Pick Date' to select"
                     readonly
                     style="flex: 1; padding: 12px; background: rgba(30, 41, 59, 0.5); border: 2px solid rgba(148, 163, 184, 0.3); border-radius: 8px; color: #F1F5F9; font-size: 1rem; cursor: pointer;"
-                    onclick="document.getElementById('dobHidden').showPicker();"
+                    onclick="document.getElementById('dob').showPicker();"
                   >
                   <input 
                     type="date" 
-                    id="dobHidden" 
                     id="dob"
                     max="2026-01-29"
                     min="1900-01-01"
-                    style="position: absolute; opacity: 0; pointer-events: none;"
+                    style="position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none;"
                   >
                   <button 
                     type="button" 
-                    onclick="document.getElementById('dobHidden').showPicker(); return false;"
+                    onclick="document.getElementById('dob').showPicker(); return false;"
                     style="padding: 12px 16px; background: rgba(255, 183, 3, 0.1); border: 2px solid #FFB703; color: #FFB703; border-radius: 8px; cursor: pointer; font-weight: 600; white-space: nowrap;"
                   >
                     📅 Pick Date
@@ -224,12 +223,12 @@
       if (phone) document.getElementById('phone').value = phone;
       document.getElementById('country').value = country;
       if (dob) {
-        document.getElementById('dobHidden').value = dob;
+        document.getElementById('dob').value = dob;
         updateDobDisplay(dob);
       }
       
       // Add date change listener
-      document.getElementById('dobHidden').addEventListener('change', function() {
+      document.getElementById('dob').addEventListener('change', function() {
         console.log('Date changed to:', this.value);
         updateDobDisplay(this.value);
       });
@@ -250,7 +249,7 @@
           const email = document.getElementById('email').value.trim();
           const phone = document.getElementById('phone').value.trim();
           const country = document.getElementById('country').value;
-          const dob = document.getElementById('dobHidden').value;
+          const dob = document.getElementById('dob').value;
           
           console.log('Saving:', { fullName, email, phone, country, dob });
           
