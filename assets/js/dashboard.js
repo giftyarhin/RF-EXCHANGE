@@ -25,7 +25,166 @@ document.querySelectorAll('.main-nav a').forEach(link => {
 
 // Toggle notifications
 function toggleNotifications() {
-  alert('Notifications panel will be implemented here');
+  const notificationBtn = document.querySelector('.notification-btn');
+  if (!notificationBtn) return;
+  
+  // Check if panel already exists
+  const existingPanel = document.querySelector('.notification-panel');
+  if (existingPanel) {
+    existingPanel.remove();
+    return;
+  }
+  
+  const panel = document.createElement('div');
+  panel.className = 'notification-panel';
+  panel.innerHTML = `
+    <div class="notification-header">
+      <h4>Notifications</h4>
+      <button onclick="markAllRead()" style="background: none; border: none; color: #FFB703; cursor: pointer; font-size: 0.85rem;">Mark all read</button>
+    </div>
+    <div class="notification-list">
+      <div class="notification-item unread">
+        <div class="notification-icon" style="background: #10b981;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">Deposit Successful</div>
+          <div class="notification-text">$5,000 has been added to your wallet</div>
+          <div class="notification-time">2 hours ago</div>
+        </div>
+      </div>
+      <div class="notification-item unread">
+        <div class="notification-icon" style="background: #FFB703;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">Price Alert</div>
+          <div class="notification-text">BTC reached your target price of $90,000</div>
+          <div class="notification-time">4 hours ago</div>
+        </div>
+      </div>
+      <div class="notification-item">
+        <div class="notification-icon" style="background: #06B6D4;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">KYC Verified</div>
+          <div class="notification-text">Your account has been verified</div>
+          <div class="notification-time">1 day ago</div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Add notification styles
+  if (!document.getElementById('notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+      .notification-panel {
+        position: absolute;
+        top: 100%;
+        right: 60px;
+        margin-top: 8px;
+        background: rgba(30, 41, 59, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        width: 360px;
+        max-height: 500px;
+        overflow-y: auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+      }
+      .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .notification-header h4 {
+        margin: 0;
+        color: #F1F5F9;
+        font-size: 1rem;
+      }
+      .notification-list {
+        padding: 8px;
+      }
+      .notification-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 4px;
+      }
+      .notification-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .notification-item.unread {
+        background: rgba(255, 183, 3, 0.05);
+      }
+      .notification-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .notification-content {
+        flex: 1;
+      }
+      .notification-title {
+        color: #F1F5F9;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+      }
+      .notification-text {
+        color: #94A3B8;
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+      }
+      .notification-time {
+        color: #64748B;
+        font-size: 0.75rem;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(panel);
+  
+  // Close when clicking outside
+  setTimeout(() => {
+    document.addEventListener('click', function closePanel(e) {
+      if (!panel.contains(e.target) && !notificationBtn.contains(e.target)) {
+        panel.remove();
+        document.removeEventListener('click', closePanel);
+      }
+    });
+  }, 0);
+}
+
+function markAllRead() {
+  document.querySelectorAll('.notification-item.unread').forEach(item => {
+    item.classList.remove('unread');
+  });
+  const badge = document.querySelector('.notification-badge');
+  if (badge) badge.textContent = '0';
 }
 
 // Toggle user menu
