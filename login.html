@@ -38,6 +38,15 @@
           </div>
         </div>
 
+        <div class="form-group" id="twoFactorGroup" style="display: none;">
+          <label for="verificationCode">2FA Verification Code</label>
+          <input type="text" id="verificationCode" name="verificationCode" placeholder="Enter 6-digit code" maxlength="6" pattern="\d{6}">
+          <div id="codeStatus" style="margin-top: 8px; font-size: 0.85rem;"></div>
+          <button type="button" class="btn-auth" style="margin-top: 8px; background: rgba(255, 183, 3, 0.1); border: 1px solid #FFB703; color: #FFB703;" onclick="resendLoginCode()">
+            <span id="resendText">Resend Code</span>
+          </button>
+        </div>
+
         <div class="form-options">
           <label class="checkbox-label">
             <input type="checkbox" name="remember">
@@ -134,5 +143,111 @@
   </div>
 
   <script src="assets/js/auth.js"></script>
+  <script>
+    let loginCodeSent = false;
+    let generatedLoginCode = '';
+    let loginTimer = null;
+
+    // Send verification code when login button is clicked
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const verificationCode = document.getElementById('verificationCode').value;
+
+      // Validate email and password first
+      if (!email || !password) {
+        showError('Please enter your email and password');
+        return;
+      }
+
+      // If code hasn't been sent yet, send it
+      if (!loginCodeSent) {
+        sendLoginCode(email);
+        return;
+      }
+
+      // If code sent but not entered or incorrect
+      if (!verificationCode || verificationCode !== generatedLoginCode) {
+        showError('Please enter the correct verification code');
+        return;
+      }
+
+      // All validations passed - proceed with login
+      const btnText = document.querySelector('.btn-text');
+      const btnLoader = document.querySelector('.btn-loader');
+      btnText.style.display = 'none';
+      btnLoader.style.display = 'inline-block';
+
+      setTimeout(() => {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    });
+
+    function sendLoginCode(email) {
+      // Generate 6-digit code
+      generatedLoginCode = Math.floor(100000 + Math.random() * 900000).toString();
+      loginCodeSent = true;
+
+      // Show 2FA field
+      document.getElementById('twoFactorGroup').style.display = 'block';
+
+      // Simulate sending code
+      console.log('LOGIN 2FA Code:', generatedLoginCode);
+      alert(`Verification code sent to ${email}\n\nFor demo purposes, your code is: ${generatedLoginCode}`);
+
+      // Show success message
+      const statusDiv = document.getElementById('codeStatus');
+      statusDiv.innerHTML = `<span style="color: #10b981;">✓ Code sent to ${email}</span>`;
+
+      // Disable resend button temporarily
+      const resendBtn = document.querySelector('#twoFactorGroup .btn-auth');
+      const resendText = document.getElementById('resendText');
+      resendBtn.disabled = true;
+      let countdown = 60;
+
+      if (loginTimer) clearInterval(loginTimer);
+      loginTimer = setInterval(() => {
+        countdown--;
+        resendText.textContent = `Resend (${countdown}s)`;
+        if (countdown <= 0) {
+          clearInterval(loginTimer);
+          resendBtn.disabled = false;
+          resendText.textContent = 'Resend Code';
+        }
+      }, 1000);
+
+      // Auto-verify when 6 digits entered
+      document.getElementById('verificationCode').addEventListener('input', function() {
+        if (this.value.length === 6) {
+          if (this.value === generatedLoginCode) {
+            statusDiv.innerHTML = `<span style="color: #10b981;">✓ Code verified successfully!</span>`;
+            this.style.borderColor = '#10b981';
+          } else {
+            statusDiv.innerHTML = `<span style="color: #ef4444;">✗ Invalid code. Please try again.</span>`;
+            this.style.borderColor = '#ef4444';
+          }
+        }
+      });
+    }
+
+    function resendLoginCode() {
+      const email = document.getElementById('email').value;
+      loginCodeSent = false;
+      sendLoginCode(email);
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+  </script>
 </body>
 </html>
