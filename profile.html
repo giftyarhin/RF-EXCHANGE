@@ -7,6 +7,36 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    /* Make date input interactive and visible */
+    input[type="date"] {
+      position: relative;
+      cursor: pointer !important;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      filter: invert(0.8);
+      font-size: 1.2rem;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+      filter: invert(1);
+    }
+    
+    input[type="date"]:focus {
+      border-color: #FFB703 !important;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 183, 3, 0.2);
+    }
+    
+    input[type="date"]:hover {
+      border-color: rgba(255, 183, 3, 0.5) !important;
+    }
+  </style>
 </head>
 <body class="dashboard-page">
   <header class="dashboard-header">
@@ -114,7 +144,13 @@
               </div>
               <div>
                 <label style="display: block; color: #94A3B8; font-size: 0.9rem; margin-bottom: 8px;">Date of Birth</label>
-                <input type="date" id="dob" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.4); border-radius: 8px; color: #F1F5F9; font-size: 1rem; cursor: pointer; color-scheme: dark;" onfocus="this.showPicker()">
+                <input 
+                  type="date" 
+                  id="dob" 
+                  max="2026-01-29"
+                  style="width: 100%; padding: 12px; background: rgba(30, 41, 59, 0.9); border: 2px solid rgba(148, 163, 184, 0.3); border-radius: 8px; color: #F1F5F9; font-size: 1rem; cursor: pointer; color-scheme: dark;"
+                  onclick="this.showPicker()"
+                >
               </div>
             </div>
             <div id="saveMessage" style="display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px; color: #10b981; margin-bottom: 20px;">
