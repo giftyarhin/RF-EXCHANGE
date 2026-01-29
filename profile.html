@@ -53,6 +53,10 @@
       <div class="page-header">
         <h1>👤 Profile</h1>
         <p class="page-subtitle">Manage your account information</p>
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button onclick="testSave()" style="padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">🧪 Test Save Function</button>
+          <button onclick="clearAllData()" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">🗑️ Clear All Data</button>
+        </div>
       </div>
 
       <div class="dashboard-grid profile-grid" style="grid-template-columns: 1fr 2fr;">
@@ -267,6 +271,40 @@
 
     function cancelChanges() {
       location.reload();
+    }
+
+    function testSave() {
+      console.log('Testing save function...');
+      const testName = 'Test User ' + Math.floor(Math.random() * 1000);
+      const testEmail = 'test' + Math.floor(Math.random() * 1000) + '@example.com';
+      
+      localStorage.setItem('userFullName', testName);
+      localStorage.setItem('userFirstName', testName.split(' ')[0]);
+      localStorage.setItem('userLastName', testName.split(' ').slice(1).join(' '));
+      localStorage.setItem('userEmail', testEmail);
+      
+      console.log('Test data saved:', {
+        fullName: localStorage.getItem('userFullName'),
+        email: localStorage.getItem('userEmail')
+      });
+      
+      alert('✓ Test data saved!\nName: ' + testName + '\nEmail: ' + testEmail + '\n\nRefreshing page...');
+      location.reload();
+    }
+
+    function clearAllData() {
+      if (confirm('⚠️ This will clear ALL your profile data. Are you sure?')) {
+        localStorage.removeItem('userFullName');
+        localStorage.removeItem('userFirstName');
+        localStorage.removeItem('userLastName');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userPhone');
+        localStorage.removeItem('userCountry');
+        localStorage.removeItem('userDOB');
+        console.log('All data cleared');
+        alert('✓ All profile data cleared. Refreshing...');
+        location.reload();
+      }
     }
   </script>
 </body>
