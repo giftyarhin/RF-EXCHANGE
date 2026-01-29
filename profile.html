@@ -113,9 +113,12 @@
                 <input type="date" id="dob" value="1990-01-01" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
               </div>
             </div>
+            <div id="saveMessage" style="display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px; color: #10b981; margin-bottom: 20px;">
+              ✓ Profile saved successfully!
+            </div>
             <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; display: flex; gap: 12px; justify-content: flex-end;">
               <button type="button" onclick="cancelChanges()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #F1F5F9; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
-              <button type="submit" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Save Changes</button>
+              <button type="submit" id="saveBtn" style="background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Save Changes</button>
             </div>
           </form>
         </div>
@@ -125,8 +128,12 @@
 
   <script src="assets/js/dashboard.js"></script>
   <script>
+    let formInitialized = false;
+
     // Load user data from localStorage
     window.addEventListener('DOMContentLoaded', function() {
+      console.log('Profile page loaded');
+      
       const fullName = localStorage.getItem('userFullName') || 'User';
       const firstName = localStorage.getItem('userFirstName') || 'User';
       const lastName = localStorage.getItem('userLastName') || '';
@@ -134,6 +141,8 @@
       const phone = localStorage.getItem('userPhone') || '';
       const country = localStorage.getItem('userCountry') || 'United States';
       const dob = localStorage.getItem('userDOB') || '1990-01-01';
+      
+      console.log('Loaded data:', { fullName, email, phone, country, dob });
       
       // Update profile sidebar
       const nameParts = fullName.split(' ');
@@ -159,58 +168,104 @@
       if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
       if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
       
-      // Handle form submission - MUST be inside DOMContentLoaded
-      document.getElementById('profileForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+      // Handle form submission
+      const form = document.getElementById('profileForm');
+      if (form && !formInitialized) {
+        formInitialized = true;
+        console.log('Attaching form submit handler');
         
-        const fullName = document.getElementById('fullName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const country = document.getElementById('country').value;
-        const dob = document.getElementById('dob').value;
-        
-        if (!fullName || !email) {
-          alert('Please enter your name and email');
-          return;
-        }
-        
-        // Parse full name into first and last name
-        const nameParts = fullName.split(' ');
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || '';
-        
-        // Save to localStorage
-        localStorage.setItem('userFullName', fullName);
-        localStorage.setItem('userFirstName', firstName);
-        localStorage.setItem('userLastName', lastName);
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userPhone', phone);
-        localStorage.setItem('userCountry', country);
-        localStorage.setItem('userDOB', dob);
-        
-        // Update sidebar display immediately
-        const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
-        
-        const avatars = document.querySelectorAll('.user-avatar');
-        avatars.forEach(avatar => avatar.textContent = initials);
-        
-        const h3Elements = document.querySelectorAll('h3');
-        if (h3Elements.length > 0) h3Elements[0].textContent = fullName;
-        
-        const pElements = document.querySelectorAll('p');
-        if (pElements.length > 0) pElements[0].textContent = email;
-        
-        // Update header
-        if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
-        if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
-        
-        // Show success message
-        alert('✓ Profile updated successfully!\n\nYour name will now appear as "' + fullName + '" across all pages.');
-      });
+        form.onsubmit = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          console.log('Form submitted!');
+          
+          const fullName = document.getElementById('fullName').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const phone = document.getElementById('phone').value.trim();
+          const country = document.getElementById('country').value;
+          const dob = document.getElementById('dob').value;
+          
+          console.log('Saving:', { fullName, email, phone, country, dob });
+          
+          if (!fullName || !email) {
+            alert('⚠️ Please enter your name and email');
+            return false;
+          }
+          
+          // Parse full name into first and last name
+          const nameParts = fullName.split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+          
+          // Save to localStorage
+          localStorage.setItem('userFullName', fullName);
+          localStorage.setItem('userFirstName', firstName);
+          localStorage.setItem('userLastName', lastName);
+          localStorage.setItem('userEmail', email);
+          localStorage.setItem('userPhone', phone);
+          localStorage.setItem('userCountry', country);
+          localStorage.setItem('userDOB', dob);
+          
+          console.log('Saved to localStorage!');
+          console.log('Verify:', localStorage.getItem('userFullName'));
+          
+          // Update sidebar display immediately
+          const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+          
+          const avatars = document.querySelectorAll('.user-avatar');
+          avatars.forEach(avatar => {
+            avatar.textContent = initials;
+            console.log('Updated avatar:', avatar.textContent);
+          });
+          
+          const h3Elements = document.querySelectorAll('h3');
+          if (h3Elements.length > 0) {
+            h3Elements[0].textContent = fullName;
+            console.log('Updated h3:', h3Elements[0].textContent);
+          }
+          
+          const pElements = document.querySelectorAll('p');
+          if (pElements.length > 0) {
+            pElements[0].textContent = email;
+            console.log('Updated email:', pElements[0].textContent);
+          }
+          
+          // Update header
+          if (document.getElementById('userName')) {
+            document.getElementById('userName').textContent = fullName;
+            console.log('Updated header name');
+          }
+          if (document.getElementById('userAvatar')) {
+            document.getElementById('userAvatar').textContent = initials;
+            console.log('Updated header avatar');
+          }
+          
+          // Show success message
+          const saveMessage = document.getElementById('saveMessage');
+          if (saveMessage) {
+            saveMessage.style.display = 'block';
+            setTimeout(() => {
+              saveMessage.style.display = 'none';
+            }, 5000);
+          }
+          
+          // Change button text temporarily
+          const saveBtn = document.getElementById('saveBtn');
+          const originalText = saveBtn.textContent;
+          saveBtn.textContent = '✓ Saved!';
+          saveBtn.style.background = '#10b981';
+          setTimeout(() => {
+            saveBtn.textContent = originalText;
+            saveBtn.style.background = 'linear-gradient(135deg, #FFB703, #F59E0B)';
+          }, 3000);
+          
+          return false;
+        };
+      }
     });
 
     function cancelChanges() {
-      // Reload the page to reset form
       location.reload();
     }
   </script>
