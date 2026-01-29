@@ -289,8 +289,8 @@
         </button>
         <div class="user-menu">
           <button class="user-btn" onclick="toggleUserMenu()">
-            <div class="user-avatar">JD</div>
-            <span>John Doe</span>
+            <div class="user-avatar" id="userAvatar">JD</div>
+            <span id="userName">John Doe</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -512,6 +512,15 @@
       convertCurrency();
       updatePopularRates();
     }, 5000);
+
+    // Load user name from localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+      const fullName = localStorage.getItem('userFullName') || 'User';
+      const nameParts = fullName.split(' ');
+      const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+      if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
+      if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
+    });
   </script>
 </body>
 </html>
