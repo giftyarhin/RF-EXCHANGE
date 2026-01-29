@@ -138,58 +138,75 @@
       // Update profile sidebar
       const nameParts = fullName.split(' ');
       const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
-      document.querySelector('.user-avatar').textContent = initials;
-      document.querySelector('h3').textContent = fullName;
-      document.querySelectorAll('p')[0].textContent = email;
+      
+      const avatars = document.querySelectorAll('.user-avatar');
+      avatars.forEach(avatar => avatar.textContent = initials);
+      
+      const h3Elements = document.querySelectorAll('h3');
+      if (h3Elements.length > 0) h3Elements[0].textContent = fullName;
+      
+      const pElements = document.querySelectorAll('p');
+      if (pElements.length > 0) pElements[0].textContent = email;
       
       // Update form fields
       document.getElementById('fullName').value = fullName;
       document.getElementById('email').value = email;
-      document.getElementById('phone').value = phone;
+      if (phone) document.getElementById('phone').value = phone;
       document.getElementById('country').value = country;
       document.getElementById('dob').value = dob;
       
       // Update header
       if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
       if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
-    });
-
-    // Handle form submission
-    document.getElementById('profileForm').addEventListener('submit', function(e) {
-      e.preventDefault();
       
-      const fullName = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const country = document.getElementById('country').value;
-      const dob = document.getElementById('dob').value;
-      
-      // Parse full name into first and last name
-      const nameParts = fullName.split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-      
-      // Save to localStorage
-      localStorage.setItem('userFullName', fullName);
-      localStorage.setItem('userFirstName', firstName);
-      localStorage.setItem('userLastName', lastName);
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('userPhone', phone);
-      localStorage.setItem('userCountry', country);
-      localStorage.setItem('userDOB', dob);
-      
-      // Update sidebar display
-      const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
-      document.querySelector('.user-avatar').textContent = initials;
-      document.querySelector('h3').textContent = fullName;
-      document.querySelectorAll('p')[0].textContent = email;
-      
-      // Update header
-      if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
-      if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
-      
-      // Show success message
-      alert('✓ Profile updated successfully!');
+      // Handle form submission - MUST be inside DOMContentLoaded
+      document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const country = document.getElementById('country').value;
+        const dob = document.getElementById('dob').value;
+        
+        if (!fullName || !email) {
+          alert('Please enter your name and email');
+          return;
+        }
+        
+        // Parse full name into first and last name
+        const nameParts = fullName.split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        // Save to localStorage
+        localStorage.setItem('userFullName', fullName);
+        localStorage.setItem('userFirstName', firstName);
+        localStorage.setItem('userLastName', lastName);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userPhone', phone);
+        localStorage.setItem('userCountry', country);
+        localStorage.setItem('userDOB', dob);
+        
+        // Update sidebar display immediately
+        const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+        
+        const avatars = document.querySelectorAll('.user-avatar');
+        avatars.forEach(avatar => avatar.textContent = initials);
+        
+        const h3Elements = document.querySelectorAll('h3');
+        if (h3Elements.length > 0) h3Elements[0].textContent = fullName;
+        
+        const pElements = document.querySelectorAll('p');
+        if (pElements.length > 0) pElements[0].textContent = email;
+        
+        // Update header
+        if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
+        if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
+        
+        // Show success message
+        alert('✓ Profile updated successfully!\n\nYour name will now appear as "' + fullName + '" across all pages.');
+      });
     });
 
     function cancelChanges() {
