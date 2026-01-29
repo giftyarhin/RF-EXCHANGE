@@ -33,12 +33,34 @@
 
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
+          <div style="display: flex; gap: 8px;">
+            <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email" style="flex: 1;">
+            <button type="button" id="sendEmailCode" class="btn-auth" style="min-width: 120px; background: rgba(255, 183, 3, 0.1); border: 1px solid #FFB703; color: #FFB703; padding: 12px 16px;" onclick="sendVerificationCode('email')">
+              <span id="emailCodeText">Send Code</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" id="emailCodeGroup" style="display: none;">
+          <label for="emailCode">Email Verification Code</label>
+          <input type="text" id="emailCode" name="emailCode" placeholder="Enter 6-digit code" maxlength="6" pattern="\d{6}">
+          <div id="emailCodeStatus" style="margin-top: 4px; font-size: 0.85rem;"></div>
         </div>
 
         <div class="form-group">
           <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="+233 XX XXX XXXX" required autocomplete="tel">
+          <div style="display: flex; gap: 8px;">
+            <input type="tel" id="phone" name="phone" placeholder="+233 XX XXX XXXX" required autocomplete="tel" style="flex: 1;">
+            <button type="button" id="sendPhoneCode" class="btn-auth" style="min-width: 120px; background: rgba(255, 183, 3, 0.1); border: 1px solid #FFB703; color: #FFB703; padding: 12px 16px;" onclick="sendVerificationCode('phone')">
+              <span id="phoneCodeText">Send Code</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" id="phoneCodeGroup" style="display: none;">
+          <label for="phoneCode">Phone Verification Code</label>
+          <input type="text" id="phoneCode" name="phoneCode" placeholder="Enter 6-digit code" maxlength="6" pattern="\d{6}">
+          <div id="phoneCodeStatus" style="margin-top: 4px; font-size: 0.85rem;"></div>
         </div>
 
         <div class="form-group">
@@ -177,5 +199,109 @@
   </div>
 
   <script src="assets/js/auth.js"></script>
+  <script>
+    let emailCodeSent = false;
+    let phoneCodeSent = false;
+    let generatedEmailCode = '';
+    let generatedPhoneCode = '';
+    let emailTimer = null;
+    let phoneTimer = null;
+
+    function sendVerificationCode(type) {
+      const isEmail = type === 'email';
+      const input = document.getElementById(isEmail ? 'email' : 'phone');
+      const codeGroup = document.getElementById(isEmail ? 'emailCodeGroup' : 'phoneCodeGroup');
+      const button = document.getElementById(isEmail ? 'sendEmailCode' : 'sendPhoneCode');
+      const buttonText = document.getElementById(isEmail ? 'emailCodeText' : 'phoneCodeText');
+      const statusDiv = document.getElementById(isEmail ? 'emailCodeStatus' : 'phoneCodeStatus');
+
+      // Validate input
+      if (!input.value || (isEmail && !input.checkValidity())) {
+        alert(`Please enter a valid ${isEmail ? 'email address' : 'phone number'}`);
+        return;
+      }
+
+      // Generate 6-digit code
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      if (isEmail) {
+        generatedEmailCode = code;
+        emailCodeSent = true;
+      } else {
+        generatedPhoneCode = code;
+        phoneCodeSent = true;
+      }
+
+      // Show verification code input
+      codeGroup.style.display = 'block';
+
+      // Simulate sending code (in production, this would be an API call)
+      console.log(`${type.toUpperCase()} Verification Code:`, code);
+      alert(`Verification code sent to ${input.value}\n\nFor demo purposes, your code is: ${code}`);
+
+      // Show success message
+      statusDiv.innerHTML = `<span style="color: #10b981;">✓ Code sent to ${input.value}</span>`;
+
+      // Disable button and start countdown
+      button.disabled = true;
+      let countdown = 60;
+      const timer = setInterval(() => {
+        countdown--;
+        buttonText.textContent = `Resend (${countdown}s)`;
+        if (countdown <= 0) {
+          clearInterval(timer);
+          button.disabled = false;
+          buttonText.textContent = 'Resend Code';
+        }
+      }, 1000);
+
+      if (isEmail) emailTimer = timer;
+      else phoneTimer = timer;
+
+      // Add verification listener
+      const codeInput = document.getElementById(isEmail ? 'emailCode' : 'phoneCode');
+      codeInput.addEventListener('input', function() {
+        if (this.value.length === 6) {
+          verifyCode(type, this.value);
+        }
+      });
+    }
+
+    function verifyCode(type, code) {
+      const isEmail = type === 'email';
+      const correctCode = isEmail ? generatedEmailCode : generatedPhoneCode;
+      const statusDiv = document.getElementById(isEmail ? 'emailCodeStatus' : 'phoneCodeStatus');
+      const codeInput = document.getElementById(isEmail ? 'emailCode' : 'phoneCode');
+
+      if (code === correctCode) {
+        statusDiv.innerHTML = `<span style="color: #10b981;">✓ ${isEmail ? 'Email' : 'Phone'} verified successfully!</span>`;
+        codeInput.style.borderColor = '#10b981';
+        codeInput.disabled = true;
+      } else {
+        statusDiv.innerHTML = `<span style="color: #ef4444;">✗ Invalid code. Please try again.</span>`;
+        codeInput.style.borderColor = '#ef4444';
+      }
+    }
+
+    // Update form submission to check verification
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+      registerForm.addEventListener('submit', function(e) {
+        const emailCode = document.getElementById('emailCode').value;
+        const phoneCode = document.getElementById('phoneCode').value;
+
+        if (!emailCodeSent || emailCode !== generatedEmailCode) {
+          e.preventDefault();
+          alert('Please verify your email address first');
+          return;
+        }
+
+        if (!phoneCodeSent || phoneCode !== generatedPhoneCode) {
+          e.preventDefault();
+          alert('Please verify your phone number first');
+          return;
+        }
+      });
+    }
+  </script>
 </body>
 </html>
