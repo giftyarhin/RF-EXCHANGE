@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    @media (max-width: 768px) {
+      .portfolio-section { grid-template-columns: 1fr !important; }
+      table th, table td { padding: 8px 4px !important; font-size: 0.75rem !important; }
+      table th:nth-child(5), table td:nth-child(5),
+      table th:nth-child(6), table td:nth-child(6) { display: none; }
+      .container { padding: 16px; }
+    }
+  </style>
 </head>
 <body class="dashboard-page">
   <header class="dashboard-header">

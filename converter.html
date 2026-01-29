@@ -15,6 +15,17 @@
       min-height: 100vh;
     }
 
+    @media (max-width: 768px) {
+      .converter-container { padding: 20px 12px !important; }
+      .converter-card { padding: 20px 12px !important; }
+      .converter-input-group { flex-direction: column !important; gap: 8px !important; }
+      .converter-amount { font-size: 1.1rem !important; padding: 12px !important; }
+      .converter-select-wrapper { min-width: 100% !important; width: 100% !important; }
+      .quick-amounts { grid-template-columns: repeat(2, 1fr) !important; }
+      .popular-pairs { grid-template-columns: 1fr !important; }
+      .converter-header h1 { font-size: 1.5rem; }
+    }
+
     .converter-container {
       max-width: 800px;
       margin: 0 auto;
