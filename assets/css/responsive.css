@@ -151,9 +151,130 @@
     padding: 20px 16px !important;
   }
 
-  /* Hide long text on mobile */
+  /* Card link sizing */
   .card-link {
     font-size: 0.85rem;
+  }
+
+  /* Markets page mobile */
+  .portfolio-section {
+    grid-template-columns: 1fr !important;
+  }
+
+  table th, table td {
+    padding: 8px 4px !important;
+    font-size: 0.8rem !important;
+  }
+
+  table th:nth-child(5),
+  table td:nth-child(5),
+  table th:nth-child(6),
+  table td:nth-child(6) {
+    display: none;
+  }
+
+  /* P2P page mobile */
+  .p2p-filters,
+  .p2p-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .p2p-card {
+    padding: 16px !important;
+  }
+
+  /* Converter page mobile */
+  .converter-container {
+    padding: 20px 16px !important;
+  }
+
+  .converter-card {
+    padding: 24px 16px !important;
+  }
+
+  .converter-input-group {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .converter-amount {
+    font-size: 1.2rem !important;
+    padding: 16px 12px !important;
+  }
+
+  .converter-select-wrapper {
+    min-width: 100% !important;
+  }
+
+  .swap-button {
+    margin: 16px auto !important;
+  }
+
+  .popular-pairs {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Wallets page mobile */
+  .wallets-grid,
+  .wallet-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .wallet-card {
+    padding: 16px !important;
+  }
+
+  /* Gift cards page mobile */
+  .gift-cards-grid,
+  .cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .gift-card {
+    padding: 16px !important;
+  }
+
+  /* Transaction history mobile */
+  .transaction-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .transaction-amount {
+    margin-left: auto;
+  }
+
+  /* Mobile menu improvements */
+  .main-nav {
+    position: fixed;
+    top: 60px;
+    left: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: calc(100vh - 60px);
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    transition: left 0.3s ease;
+    z-index: 999;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .main-nav.active {
+    left: 0;
+  }
+
+  .main-nav a {
+    width: 100%;
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  .main-nav a:hover,
+  .main-nav a.active {
+    background: rgba(255, 183, 3, 0.1);
   }
 }
 
