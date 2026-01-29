@@ -183,6 +183,16 @@
       setTimeout(() => {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
+        
+        // If user data not in localStorage, use default (for existing users)
+        if (!localStorage.getItem('userFirstName')) {
+          // Extract name from email or use default
+          const emailName = email.split('@')[0];
+          const capitalized = emailName.charAt(0).toUpperCase() + emailName.slice(1);
+          localStorage.setItem('userFirstName', capitalized);
+          localStorage.setItem('userFullName', capitalized);
+        }
+        
         window.location.href = 'dashboard.html';
       }, 1500);
     });

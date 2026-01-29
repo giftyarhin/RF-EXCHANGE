@@ -39,8 +39,8 @@
         </button>
         <div class="user-menu">
           <button class="user-btn" onclick="toggleUserMenu()">
-            <div class="user-avatar">JD</div>
-            <span>John Doe</span>
+            <div class="user-avatar" id="userAvatar">JD</div>
+            <span id="userName">John Doe</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -53,7 +53,7 @@
   <main class="dashboard-main">
     <div class="container">
       <div class="page-header">
-        <h1>Welcome back, John! 👋</h1>
+        <h1 id="welcomeMessage">Welcome back, John! 👋</h1>
         <p class="page-subtitle">Here's what's happening with your account today</p>
       </div>
 
@@ -288,6 +288,23 @@
         this.style.transform = 'translateY(0)';
         this.style.boxShadow = '';
       });
+    });
+
+    // Load user name from localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+      const firstName = localStorage.getItem('userFirstName') || 'User';
+      const fullName = localStorage.getItem('userFullName') || 'User';
+      
+      // Update welcome message
+      document.getElementById('welcomeMessage').textContent = `Welcome back, ${firstName}! 👋`;
+      
+      // Update user name in header
+      document.getElementById('userName').textContent = fullName;
+      
+      // Update user avatar with initials
+      const nameParts = fullName.split(' ');
+      const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+      document.getElementById('userAvatar').textContent = initials;
     });
   </script>
 </body>

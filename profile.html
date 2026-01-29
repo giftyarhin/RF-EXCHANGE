@@ -124,5 +124,26 @@
   </main>
 
   <script src="assets/js/dashboard.js"></script>
+  <script>
+    // Load user data from localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+      const fullName = localStorage.getItem('userFullName') || 'User';
+      const firstName = localStorage.getItem('userFirstName') || 'User';
+      const lastName = localStorage.getItem('userLastName') || '';
+      const email = localStorage.getItem('userEmail') || 'user@example.com';
+      
+      // Update profile sidebar
+      const nameParts = fullName.split(' ');
+      const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+      document.querySelector('.user-avatar').textContent = initials;
+      document.querySelector('h3').textContent = fullName;
+      document.querySelectorAll('p')[0].textContent = email;
+      
+      // Update form fields
+      const inputs = document.querySelectorAll('input');
+      inputs[0].value = fullName; // Full Name
+      inputs[1].value = email; // Email
+    });
+  </script>
 </body>
 </html>
