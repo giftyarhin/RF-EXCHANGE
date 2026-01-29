@@ -77,7 +77,7 @@
           </div>
         </div>
 
-        <div class="portfolio-card">
+        <div class="portfolio-card clickable" onclick="window.location.href='wallets.html'" style="cursor: pointer;">
           <div class="card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
@@ -89,7 +89,7 @@
           <a href="wallets.html" class="card-link">View Wallets →</a>
         </div>
 
-        <div class="portfolio-card">
+        <div class="portfolio-card clickable" onclick="showPnLDetails()" style="cursor: pointer;">
           <div class="card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -101,7 +101,7 @@
           <div class="card-percentage positive">+2.81%</div>
         </div>
 
-        <div class="portfolio-card">
+        <div class="portfolio-card clickable" onclick="showPositionsDetails()" style="cursor: pointer;">
           <div class="card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
@@ -109,7 +109,7 @@
           </div>
           <div class="card-label">Open Positions</div>
           <div class="card-value">8</div>
-          <a href="trading.html" class="card-link">Manage Trades →</a>
+          <div class="card-link" style="opacity: 0.7;">Click to view details →</div>
         </div>
       </div>
 
@@ -137,13 +137,14 @@
               </div>
               <span>Withdraw</span>
             </a>
-            <a href="trading.html" class="action-btn">
+            <a href="converter.html" class="action-btn">
               <div class="action-icon trade">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                  <path d="M7 10L12 15L17 10" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M17 14L12 9L7 14" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
-              <span>Trade</span>
+              <span>Convert</span>
             </a>
             <a href="p2p.html" class="action-btn">
               <div class="action-icon p2p">
@@ -252,5 +253,42 @@
   </main>
 
   <script src="assets/js/dashboard.js"></script>
+  <script>
+    // Interactive card functions
+    function showPnLDetails() {
+      alert('📊 Today\'s Profit & Loss Breakdown:\n\n' +
+            '✅ Realized P&L: +$890.32\n' +
+            '📈 Unrealized P&L: +$344.24\n' +
+            '💰 Total: +$1,234.56 (+2.81%)\n\n' +
+            'Best Performer: BTC/USDT (+$456.78)\n' +
+            'Positions: 8 active trades');
+    }
+
+    function showPositionsDetails() {
+      alert('📊 Open Positions Summary:\n\n' +
+            '1. BTC/USDT - Long - +$456.78\n' +
+            '2. ETH/USDT - Long - +$234.12\n' +
+            '3. BNB/USDT - Short - +$123.45\n' +
+            '4. XRP/USDT - Long - +$89.32\n' +
+            '5. SOL/USDT - Long - +$67.89\n' +
+            '6-8. Other positions...\n\n' +
+            'Total: 8 positions\n' +
+            'Combined P&L: +$1,234.56');
+    }
+
+    // Add hover effects to clickable cards
+    document.querySelectorAll('.portfolio-card.clickable').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-4px)';
+        this.style.boxShadow = '0 8px 24px rgba(255, 183, 3, 0.2)';
+        this.style.transition = 'all 0.3s ease';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '';
+      });
+    });
+  </script>
 </body>
 </html>
