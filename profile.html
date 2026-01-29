@@ -73,9 +73,9 @@
         <!-- Profile Sidebar -->
         <div class="dashboard-widget">
           <div style="text-align: center; padding: 20px;">
-            <div class="user-avatar" style="width: 120px; height: 120px; margin: 0 auto 20px; font-size: 3rem;">JD</div>
-            <h3 style="margin: 0 0 8px 0; color: #F1F5F9;">John Doe</h3>
-            <p style="color: #94A3B8; margin: 0 0 4px 0;">john.doe@example.com</p>
+            <div class="user-avatar" id="sidebarAvatar" style="width: 120px; height: 120px; margin: 0 auto 20px; font-size: 3rem;">JD</div>
+            <h3 id="sidebarName" style="margin: 0 0 8px 0; color: #F1F5F9;">John Doe</h3>
+            <p id="sidebarEmail" style="color: #94A3B8; margin: 0 0 4px 0;">john.doe@example.com</p>
             <p style="color: #10b981; font-size: 0.85rem; margin: 0;"><svg style="width: 14px; height: 14px; vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified</p>
             <button style="margin-top: 20px; background: linear-gradient(135deg, #FFB703, #F59E0B); color: #0F172A; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Change Avatar</button>
           </div>
@@ -91,15 +91,15 @@
           <form id="profileForm" style="display: grid; gap: 20px;">
             <div>
               <label style="display: block; color: #94A3B8; font-size: 0.9rem; margin-bottom: 8px;">Full Name</label>
-              <input type="text" id="fullName" value="John Doe" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
+              <input type="text" id="fullName" placeholder="Enter your full name" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
             </div>
             <div>
               <label style="display: block; color: #94A3B8; font-size: 0.9rem; margin-bottom: 8px;">Email</label>
-              <input type="email" id="email" value="john.doe@example.com" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
+              <input type="email" id="email" placeholder="your@email.com" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
             </div>
             <div>
               <label style="display: block; color: #94A3B8; font-size: 0.9rem; margin-bottom: 8px;">Phone Number</label>
-              <input type="tel" id="phone" value="+1 (555) 123-4567" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
+              <input type="tel" id="phone" placeholder="+1 (555) 123-4567" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
               <div>
@@ -114,7 +114,7 @@
               </div>
               <div>
                 <label style="display: block; color: #94A3B8; font-size: 0.9rem; margin-bottom: 8px;">Date of Birth</label>
-                <input type="date" id="dob" value="1990-01-01" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
+                <input type="date" id="dob" style="width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; color: #F1F5F9; font-size: 1rem;">
               </div>
             </div>
             <div id="saveMessage" style="display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px; color: #10b981; margin-bottom: 20px;">
@@ -138,39 +138,37 @@
     window.addEventListener('DOMContentLoaded', function() {
       console.log('Profile page loaded');
       
-      const fullName = localStorage.getItem('userFullName') || 'User';
-      const firstName = localStorage.getItem('userFirstName') || 'User';
+      const fullName = localStorage.getItem('userFullName') || '';
+      const firstName = localStorage.getItem('userFirstName') || '';
       const lastName = localStorage.getItem('userLastName') || '';
-      const email = localStorage.getItem('userEmail') || 'user@example.com';
+      const email = localStorage.getItem('userEmail') || '';
       const phone = localStorage.getItem('userPhone') || '';
       const country = localStorage.getItem('userCountry') || 'United States';
-      const dob = localStorage.getItem('userDOB') || '1990-01-01';
+      const dob = localStorage.getItem('userDOB') || '';
       
       console.log('Loaded data:', { fullName, email, phone, country, dob });
       
       // Update profile sidebar
-      const nameParts = fullName.split(' ');
-      const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+      if (fullName) {
+        const nameParts = fullName.split(' ');
+        const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+        
+        document.getElementById('sidebarAvatar').textContent = initials;
+        document.getElementById('sidebarName').textContent = fullName;
+        if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
+        if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
+      }
       
-      const avatars = document.querySelectorAll('.user-avatar');
-      avatars.forEach(avatar => avatar.textContent = initials);
-      
-      const h3Elements = document.querySelectorAll('h3');
-      if (h3Elements.length > 0) h3Elements[0].textContent = fullName;
-      
-      const pElements = document.querySelectorAll('p');
-      if (pElements.length > 0) pElements[0].textContent = email;
+      if (email) {
+        document.getElementById('sidebarEmail').textContent = email;
+      }
       
       // Update form fields
-      document.getElementById('fullName').value = fullName;
-      document.getElementById('email').value = email;
+      if (fullName) document.getElementById('fullName').value = fullName;
+      if (email) document.getElementById('email').value = email;
       if (phone) document.getElementById('phone').value = phone;
       document.getElementById('country').value = country;
-      document.getElementById('dob').value = dob;
-      
-      // Update header
-      if (document.getElementById('userName')) document.getElementById('userName').textContent = fullName;
-      if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = initials;
+      if (dob) document.getElementById('dob').value = dob;
       
       // Handle form submission
       const form = document.getElementById('profileForm');
@@ -192,8 +190,13 @@
           
           console.log('Saving:', { fullName, email, phone, country, dob });
           
-          if (!fullName || !email) {
-            alert('⚠️ Please enter your name and email');
+          if (!fullName) {
+            alert('⚠️ Please enter your name');
+            return false;
+          }
+          
+          if (!email) {
+            alert('⚠️ Please enter your email');
             return false;
           }
           
@@ -212,28 +215,18 @@
           localStorage.setItem('userDOB', dob);
           
           console.log('Saved to localStorage!');
-          console.log('Verify:', localStorage.getItem('userFullName'));
+          console.log('Verify saved data:', {
+            fullName: localStorage.getItem('userFullName'),
+            email: localStorage.getItem('userEmail'),
+            dob: localStorage.getItem('userDOB')
+          });
           
           // Update sidebar display immediately
           const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
           
-          const avatars = document.querySelectorAll('.user-avatar');
-          avatars.forEach(avatar => {
-            avatar.textContent = initials;
-            console.log('Updated avatar:', avatar.textContent);
-          });
-          
-          const h3Elements = document.querySelectorAll('h3');
-          if (h3Elements.length > 0) {
-            h3Elements[0].textContent = fullName;
-            console.log('Updated h3:', h3Elements[0].textContent);
-          }
-          
-          const pElements = document.querySelectorAll('p');
-          if (pElements.length > 0) {
-            pElements[0].textContent = email;
-            console.log('Updated email:', pElements[0].textContent);
-          }
+          document.getElementById('sidebarAvatar').textContent = initials;
+          document.getElementById('sidebarName').textContent = fullName;
+          document.getElementById('sidebarEmail').textContent = email;
           
           // Update header
           if (document.getElementById('userName')) {
@@ -263,6 +256,9 @@
             saveBtn.textContent = originalText;
             saveBtn.style.background = 'linear-gradient(135deg, #FFB703, #F59E0B)';
           }, 3000);
+          
+          console.log('✓ Profile updated successfully!');
+          alert('✓ Profile saved successfully!\n\nName: ' + fullName + '\nEmail: ' + email + (dob ? '\nDate of Birth: ' + dob : ''));
           
           return false;
         };
